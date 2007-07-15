@@ -34,7 +34,7 @@
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    SVN: $Id$
  * @see        Piece_Unity_Plugin_Interceptor_Authentication
- * @since      File available since Release 0.9.0
+ * @since      File available since Release 0.13.0
  */
 
 require dirname(__FILE__) . '/../../../../prepare.php';
@@ -55,7 +55,7 @@ require_once 'Piece/Unity/Error.php';
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    Release: @package_version@
  * @see        Piece_Unity_Plugin_Interceptor_Authentication
- * @since      Class available since Release 0.9.0
+ * @since      Class available since Release 0.13.0
  */
 class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_TestCase
 {

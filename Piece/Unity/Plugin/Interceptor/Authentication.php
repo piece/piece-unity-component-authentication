@@ -33,7 +33,7 @@
  * @copyright  2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    SVN: $Id$
- * @since      File available since Release 0.9.0
+ * @since      File available since Release 0.13.0
  */
 
 require_once 'Piece/Unity/Plugin/Common.php';
@@ -51,7 +51,7 @@ require_once 'Piece/Unity/ClassLoader.php';
  * @copyright  2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    Release: @package_version@
- * @since      Class available since Release 0.9.0
+ * @since      Class available since Release 0.13.0
  */
 class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_Common
 {
