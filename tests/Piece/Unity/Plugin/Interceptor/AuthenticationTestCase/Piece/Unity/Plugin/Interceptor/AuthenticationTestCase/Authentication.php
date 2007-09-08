@@ -73,7 +73,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase_Authentication
 
     function isAuthenticated()
     {
-        return $GLOBALS['PIECE_UNITY_PLUGIN_INTERCEPTOR_AUTHENTICATIONTESTCASE_isAuthenticated'];
+        return $GLOBALS['PIECE_UNITY_Plugin_Interceptor_AuthenticationTestCase_isAuthenticated'];
     }
 
     /**#@-*/

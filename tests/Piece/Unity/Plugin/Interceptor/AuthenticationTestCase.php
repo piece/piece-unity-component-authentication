@@ -89,14 +89,18 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
 
     function tearDown()
     {
+        foreach (array('Foo', 'Bar', null) as $realm) {
+            $service = &new Piece_Unity_Service_Authentication($realm);
+            $service->logout();
+        }
         $_SERVER['SCRIPT_NAME'] = $this->_oldScriptName;
-        unset($GLOBALS['PIECE_UNITY_PLUGIN_INTERCEPTOR_AUTHENTICATIONTESTCASE_isAuthenticated']);
+        unset($GLOBALS['PIECE_UNITY_Plugin_Interceptor_AuthenticationTestCase_isAuthenticated']);
         Piece_Unity_Context::clear();
         Piece_Unity_Error::clearErrors();
         Piece_Unity_Error::popCallback();
     }
 
-    function testProtectedResourceShouldBeAbleToAccessIfUserIsAuthenticated()
+    function testProtectedResourceShouldNotBeAbleToAccessIfAuthenticated()
     {
         $configurations = array('name'      => 'Foo',
                                 'guard'     => array('class' => 'Piece_Unity_Plugin_Interceptor_AuthenticationTestCase_Authentication', 'method' => 'isAuthenticated'),
@@ -110,7 +114,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $this->assertEquals('Foo', $this->_invokeInterceptor($configurations));
     }
 
-    function testProtectedResourceShouldNotBeAbleToAccessIfUserIsAuthenticated()
+    function testProtectedResourceShouldNotBeAbleToAccessIfNotAuthenticated()
     {
         $configurations = array('name'      => 'Foo',
                                 'guard'     => array('class' => 'Piece_Unity_Plugin_Interceptor_AuthenticationTestCase_Authentication', 'method' => 'isAuthenticated'),
@@ -268,62 +272,126 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $this->assertEquals('Foo', $this->_invokeInterceptor($configurations));
     }
 
-    function testProtectedResourceShouldBeAbleToAccessIfUserIsAuthenticatedByService()
+    /**
+     * @since Method available since Release 1.0.0
+     */
+    function testProtectedResourceShouldBeAbleToAccessIfAuthenticatedByService()
     {
         $configurations = array('name'      => 'Foo',
                                 'url'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
-
-        $this->_setServiceAuthentication('Foo', true);
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $service = &new Piece_Unity_Service_Authentication('Foo');
+        $service->login();
 
         $this->assertEquals('Foo', $this->_invokeInterceptor($configurations));
     }
 
-    function testProtectedResourceShouldNotBeAbleToAccessIfUserIsAuthenticatedByService()
+    /**
+     * @since Method available since Release 1.0.0
+     */
+    function testProtectedResourceShouldNotBeAbleToAccessIfNotAuthenticatedByService()
     {
         $configurations = array('name'      => 'Foo',
                                 'url'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
-
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
 
         $this->assertEquals('http://example.org/authenticate.php', $this->_invokeInterceptor($configurations));
     }
 
-    function testForceAuthenticationShouldBeAbleToAccessIfUserIsAuthenticatedByService()
+    /**
+     * @since Method available since Release 1.0.0
+     */
+    function testProtectedResourceShouldNotBeAbleToAccessIfAuthenticatedOtherRealm()
     {
-        $configurations = array('url' => 'http://example.org/authenticate.php',
-                                'forceAuthentication' => true
+        $configurations = array('name'      => 'Foo',
+                                'url'       => 'http://example.org/authenticate.php',
+                                'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
-
-        $serviceName = $GLOBALS['PIECE_UNITY_SERVICE_AUTHENTICATION_DEFAULT_SERVICE_NAME'];
-        $this->_setServiceAuthentication($serviceName, true);
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
-
-        $this->assertEquals('Foo', $this->_invokeInterceptor($configurations));
-    }
-
-    function testForceAuthenticationShouldNotBeAbleToAccessIfUserIsAuthenticatedByService()
-    {
-        $configurations = array('url' => 'http://example.org/authenticate.php',
-                                'forceAuthentication' => true
-                                );
-
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $service = &new Piece_Unity_Service_Authentication('Bar');
+        $service->login();
 
         $this->assertEquals('http://example.org/authenticate.php', $this->_invokeInterceptor($configurations));
     }
 
-    function testNotAuthenticate()
+    /**
+     * @since Method available since Release 1.0.0
+     */
+    function testNonProtectedResourceShouldAlwaysBeAbleToAccessByService1()
     {
-        $configurations = array('url' => 'http://example.org/authenticate.php');
-
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $configurations = array('name'      => 'Foo',
+                                'url'       => 'http://example.org/authenticate.php',
+                                'resources' => array('/admin/foo.php', '/admin/bar.php')
+                                );
+        $_SERVER['SCRIPT_NAME'] = '/foo.php';
+        $service = &new Piece_Unity_Service_Authentication('Foo');
+        $service->login();
 
         $this->assertEquals('Foo', $this->_invokeInterceptor($configurations));
+    }
+
+    /**
+     * @since Method available since Release 1.0.0
+     */
+    function testNonProtectedResourceShouldAlwaysBeAbleToAccessByService2()
+    {
+        $configurations = array('name'      => 'Foo',
+                                'url'       => 'http://example.org/authenticate.php',
+                                'resources' => array('/admin/foo.php', '/admin/bar.php')
+                                );
+        $_SERVER['SCRIPT_NAME'] = '/foo.php';
+        $service = &new Piece_Unity_Service_Authentication('Bar');
+        $service->login();
+
+        $this->assertEquals('Foo', $this->_invokeInterceptor($configurations));
+    }
+
+    /**
+     * @since Method available since Release 1.0.0
+     */
+    function testNonProtectedResourceShouldAlwaysBeAbleToAccessByService3()
+    {
+        $configurations = array('name'      => 'Foo',
+                                'url'       => 'http://example.org/authenticate.php',
+                                'resources' => array('/admin/foo.php', '/admin/bar.php')
+                                );
+        $_SERVER['SCRIPT_NAME'] = '/foo.php';
+
+        $this->assertEquals('Foo', $this->_invokeInterceptor($configurations));
+    }
+
+    /**
+     * @since Method available since Release 1.0.0
+     */
+    function testDefaultAuthenticationRealmShouldBeUsedIfRealmIsNotGiven1()
+    {
+        $configurations = array('url'       => 'http://example.org/authenticate.php',
+                                'resources' => array('/admin/foo.php', '/admin/bar.php')
+                                );
+        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $service = &new Piece_Unity_Service_Authentication();
+        $service->login();
+
+        $this->assertEquals('Foo', $this->_invokeInterceptor($configurations));
+    }
+
+    /**
+     * @since Method available since Release 1.0.0
+     */
+    function testDefaultAuthenticationRealmShouldBeUsedIfRealmIsNotGiven2()
+    {
+        $configurations = array('url'       => 'http://example.org/authenticate.php',
+                                'resources' => array('/admin/foo.php', '/admin/bar.php')
+                                );
+        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $service = &new Piece_Unity_Service_Authentication('Bar');
+        $service->login();
+
+        $this->assertEquals('http://example.org/authenticate.php', $this->_invokeInterceptor($configurations));
     }
 
     /**#@-*/
@@ -353,15 +421,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
 
     function _setIsAuthenticated($isAuthenticated)
     {
-        $GLOBALS['PIECE_UNITY_PLUGIN_INTERCEPTOR_AUTHENTICATIONTESTCASE_isAuthenticated'] = $isAuthenticated;
-    }
-
-    function _setServiceAuthentication($serviceName, $isAuthenticated)
-    {
-        $authenticationService = &new Piece_Unity_Service_Authentication($serviceName);
-        if ($isAuthenticated) {
-            $authenticationService->login();
-        }
+        $GLOBALS['PIECE_UNITY_Plugin_Interceptor_AuthenticationTestCase_isAuthenticated'] = $isAuthenticated;
     }
 
     /**#@-*/
