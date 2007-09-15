@@ -5,6 +5,7 @@
  * PHP versions 4 and 5
  *
  * Copyright (c) 2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>,
+ *               2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>,
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +31,7 @@
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>, 2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    SVN: $Id$
  * @since      File available since Release 0.13.0
@@ -38,9 +39,14 @@
 
 require_once 'Piece/Unity/Plugin/Common.php';
 require_once 'Piece/Unity/Error.php';
-require_once 'Piece/Unity/Service/Authentication.php';
 require_once 'Piece/Unity/ClassLoader.php';
+require_once 'Piece/Unity/Service/Authentication/State.php';
 
+// {{{ GLOBALS
+
+$GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey'] = '_authentication';
+
+// }}}
 // {{{ Piece_Unity_Plugin_Interceptor_Authentication
 
 /**
@@ -49,7 +55,7 @@ require_once 'Piece/Unity/ClassLoader.php';
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>, 2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    Release: @package_version@
  * @since      Class available since Release 0.13.0
@@ -70,6 +76,7 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
      */
 
     var $_scriptName;
+    var $_authenticationState;
 
     /**#@-*/
 
@@ -91,46 +98,6 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
      */
     function invoke()
     {
-        $forceAuthentication = $this->_getConfiguration('forceAuthentication');
-        if (!$forceAuthentication) {
-            $resourcesMatch = $this->_getConfiguration('resourcesMatch');
-            $resources = $this->_getConfiguration('resources');
-            if (!$resourcesMatch && !$resources) {
-                return true;
-            }
-
-            $isProtectedResource = false;
-            if ($resourcesMatch) {
-                if (!is_array($resourcesMatch)) {
-                    Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                            "The value of the configuration point [ resourcesMatch ] on the plug-in [ {$this->_name} ] should be an array."
-                                            );
-                    return;
-                }
-                
-                $isProtectedResource = $this->_isProtectedResourceByRegex($resourcesMatch);
-            }
-
-            if (!$isProtectedResource) {
-                if ($resources) {
-                    if (!is_array($resources)) {
-                        Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                                "The value of the configuration point [ resources ] on the plug-in [ {$this->_name} ] should be an array."
-                                                );
-                        return;
-                    }
-
-                    $isProtectedResource = $this->_isProtectedResource($resources);
-                }
-            }
-
-            if (!$isProtectedResource) {
-                return true;
-            }
-
-
-        }
-
         $url = $this->_getConfiguration('url');
         if (!$url) {
             Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
@@ -139,87 +106,69 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
             return;
         }
 
-        $guard = $this->_getConfiguration('guard');
-        if ($guard) {
-            $guardDirectory = $this->_getConfiguration('guardDirectory');
-            if (is_null($guardDirectory)) {
+        $isProtectedResource = false;
+        $resourcesMatch = $this->_getConfiguration('resourcesMatch');
+        if ($resourcesMatch) {
+            if (!is_array($resourcesMatch)) {
                 Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                        "The value of the configuration point [ guardDirectory ] on the plug-in [ {$this->_name} ] is required."
+                                        "The value of the configuration point [ resourcesMatch ] on the plug-in [ {$this->_name} ] should be an array."
                                         );
                 return;
             }
 
-            if (!is_array($guard)) {
-                Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                        "The value of the configuration point [ guard ] on the plug-in [ {$this->_name} ] should be an array."
-                                        );
-                return;
-            }
-
-            if (!array_key_exists('class', $guard)) {
-                Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                        "The \"class\" element is required for the configuration point [ guard ] on the plug-in [ {$this->_name} ]."
-                                        );
-                return;
-            }
-
-            if (is_null($guard['class']) || !strlen($guard['class'])) {
-                Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                        "The \"class\" element is required for the configuration point [ guard ] on the plug-in [ {$this->_name} ]."
-                                        );
-                return;
-            }
-
-            if (!array_key_exists('method', $guard)) {
-                Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                        "The \"method\" element is required for the configuration point [ guard ] on the plug-in [ {$this->_name} ]."
-                                        );
-                return;
-            }
-
-            if (is_null($guard['method']) || !strlen($guard['method'])) {
-                Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                        "The \"method\" element is required for the configuration point [ guard ] on the plug-in [ {$this->_name} ]."
-                                        );
-                return;
-            }
-
-            if (!Piece_Unity_ClassLoader::loaded($guard['class'])) {
-                Piece_Unity_ClassLoader::load($guard['class'], $guardDirectory);
-                if (Piece_Unity_Error::hasErrors('exception')) {
-                    return;
+            foreach ($resourcesMatch as $resource) {
+                if (preg_match("!$resource!", $this->_scriptName)) {
+                    $isProtectedResource = true;
+                    break;
                 }
-
-                if (!Piece_Unity_ClassLoader::loaded($guard['class'])) {
-                    Piece_Unity_Error::push(PIECE_UNITY_ERROR_NOT_FOUND,
-                                            "The class [ {$guard['class']} ] not found in the loaded file."
-                                            );
-                    return;
-                }
-            }
-
-            $guardClass = &new $guard['class']();
-            if (!method_exists($guardClass, $guard['method'])) {
-                Piece_Unity_Error::push(PIECE_UNITY_ERROR_NOT_FOUND,
-                                        "The method {$guard['method']} not found in the class [ {$guard['class']} ]."
-                                        );
-                return;
-            }
-
-            if (!$guardClass->$guard['method']($this->_context)) {
-                $this->_setForwardingURL($url);
-                return false;
-            }
-        } else {
-            $name = $this->_getConfiguration('name');
-            $authenticationService = &new Piece_Unity_Service_Authentication($name);
-            if (!$authenticationService->isAuthenticated()) {
-                $this->_setForwardingURL($url);
-                return false;
             }
         }
 
-        return true;
+        if (!$isProtectedResource) {
+            $resources = $this->_getConfiguration('resources');
+            if ($resources) {
+                if (!is_array($resources)) {
+                    Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
+                                            "The value of the configuration point [ resources ] on the plug-in [ {$this->_name} ] should be an array."
+                                            );
+                    return;
+                }
+
+                $isProtectedResource = in_array($this->_scriptName, $resources);
+            }
+        }
+
+        if (!$isProtectedResource) {
+            return true;
+        }
+
+        $realm = $this->_getConfiguration('realm');
+        if ($this->_authenticationState->isAuthenticated($realm)) {
+            if ($this->_authenticationState->hasCallbackURL($realm)) {
+                $this->_authenticationState->removeCallbackURL($realm);
+            }
+            return true;
+        } else {
+            $session = &$this->_context->getSession();
+            $session->setAttribute('redirected', true);
+            $this->_storeRequestedURL($realm);
+            $this->_context->setView($url);
+            return false;
+        }
+    }
+
+    // }}}
+    // {{{ loadAuthenticationState()
+
+    /**
+     * Loads Piece_Unity_Service_Authentication_State for preventing that
+     * the instance become an incomplete class.
+     *
+     * @static
+     */
+    function loadAuthenticationState()
+    {
+        include_once 'Piece/Unity/Service/Authentication/State.php';
     }
 
     /**#@-*/
@@ -236,15 +185,10 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
      */
     function _initialize()
     {
-        $this->_addConfigurationPoint('forceAuthentication', false);
-        $this->_addConfigurationPoint('name', $GLOBALS['PIECE_UNITY_SERVICE_AUTHENTICATION_DEFAULT_SERVICE_NAME']);
+        $this->_addConfigurationPoint('realm');
         $this->_addConfigurationPoint('resourcesMatch', array());
         $this->_addConfigurationPoint('resources', array());
         $this->_addConfigurationPoint('url');
-        $this->_addConfigurationPoint('guard', array());
-        $this->_addConfigurationPoint('guardDirectory');
-        $this->_addConfigurationPoint('useCallback', false);
-        $this->_addConfigurationPoint('callbackKey', $GLOBALS['PIECE_UNITY_SERVICE_AUTHENTICATION_DEFAULT_CALLBACK_KEY']);
 
         $this->_scriptName = $this->_context->getScriptName();
         if ($this->_context->usingProxy()) {
@@ -253,62 +197,19 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
                 $this->_scriptName = preg_replace("!^$proxyPath!", '', $this->_scriptName);
             }
         }
+
+        $this->_prepareAuthenticationState();
     }
  
     // }}}
-    // {{{ _isProtectedResource()
+    // {{{ _storeRequestedURL()
 
     /**
-     * Returns whether the current resource is protected or not.
+     * Stores the requested URL with the given realm.
      *
-     * @param array $resources
-     * @return boolean
+     * @param string $realm
      */
-    function _isProtectedResource($resources)
-    {
-        return in_array($this->_scriptName, $resources);
-    }
-
-    // }}}
-    // {{{ _setForwardingURL()
-
-    /**
-     * Returns whether the current resource is protected or not by regex.
-     *
-     * @param array $resources
-     * @return boolean
-     */
-    function _setForwardingURL($url)
-    {
-        $useCallback = $this->_getConfiguration('useCallback');
-        if ($useCallback) {
-            $callbackKey = $this->_getConfiguration('callbackKey');
-            if (is_null($callbackKey) || !strlen($callbackKey)) {
-                Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                        "The value of the configuration point [ callbackKey ] on the plug-in [ {$this->_name} ] is required."
-                                        );
-                return;
-            }
-
-            $view = $this->_createServiceURL($url, $callbackKey);
-        } else {
-            $view = $url;
-        }
-
-        $this->_context->setView($view);
-    }
-
-    // }}}
-    // {{{ _createServiceURL()
-
-    /**
-     * Createss the appropriate URL for an authentication service.
-     *
-     * @param string $url
-     * @param string $callbackKey
-     * @return string
-     */
-    function _createServiceURL($url, $callbackKey)
+    function _storeRequestedURL($realm)
     {
         if (!array_key_exists('QUERY_STRING', $_SERVER) || !strlen($_SERVER['QUERY_STRING'])) {
             $query = '';
@@ -319,30 +220,55 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
         if (!array_key_exists('PATH_INFO', $_SERVER)) {
             $pathInfo = '';
         } else {
-            $pathInfo = $_SERVER['PATH_INFO'];
+            $pathInfo = str_replace('%2F', '/', rawurlencode($_SERVER['PATH_INFO']));
         }
 
-        return "$url?$callbackKey=" . htmlentities(rawurlencode($this->_context->getScriptName() . "$pathInfo$query"));
+        if ($_SERVER['SERVER_PORT'] != 443) {
+            $protocol = 'http';
+        } else {
+            $protocol = 'https';
+        }
+
+        if ($_SERVER['SERVER_PORT'] == 80 || $_SERVER['SERVER_PORT'] == 443) {
+            $port = '';
+        } else {
+            $port = ":{$_SERVER['SERVER_PORT']}";
+        }
+
+        $this->_authenticationState->setCallbackURL($realm,
+                                                    "$protocol://{$_SERVER['SERVER_NAME']}$port" .
+                                                    str_replace('//', '/', $_SERVER['SCRIPT_NAME']) .
+                                                    "$pathInfo$query"
+                                                    );
     }
 
     // }}}
-    // {{{ _isProtectedResourceByRegex()
+    // {{{ _prepareAuthenticationState()
 
     /**
-     * Returns whether the current resource is protected or not by regex.
-     *
-     * @param array $resources
-     * @return boolean
+     * Sets the Piece_Unity_Service_Authentication_State object to
+     * the session.
      */
-    function _isProtectedResourceByRegex($resources)
+    function _prepareAuthenticationState()
     {
-        foreach ($resources as $resource) {
-            if (preg_match("!$resource!", $this->_scriptName)) {
-                return true;
-            }
+        $session = &$this->_context->getSession();
+        $authenticationState = &$session->getAttribute($GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey']);
+        if (is_null($authenticationState)) {
+            $authenticationState = &Piece_Unity_Service_Authentication_State::singleton();
+            $session->setAttributeByRef($GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey'],
+                                        $authenticationState
+                                        );
+            $session->setPreloadCallback('_Interceptor_Authentication',
+                                         array(__CLASS__, 'loadAuthenticationState')
+                                         );
+            $session->addPreloadClass('_Interceptor_Authentication',
+                                      'Piece_Unity_Service_Authentication_State'
+                                      );
+        } else {
+            Piece_Unity_Service_Authentication_State::setInstance($authenticationState);
         }
 
-        return false;
+        $this->_authenticationState = &$authenticationState;
     }
 
     /**#@-*/

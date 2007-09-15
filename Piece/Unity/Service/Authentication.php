@@ -5,6 +5,7 @@
  * PHP versions 4 and 5
  *
  * Copyright (c) 2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>,
+ *               2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>,
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,28 +31,24 @@
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Service_Authentication
- * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
+ * @copyright  2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>, 2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    SVN: $Id$
  * @since      File available since Release 1.0.0
  */
 
 require_once 'Piece/Unity/Context.php';
-require_once 'Piece/Unity/URL.php';
-
-// {{{ GLOBALS
-
-$GLOBALS['PIECE_UNITY_SERVICE_AUTHENTICATION_DEFAULT_SERVICE_NAME'] = '__service';
-$GLOBALS['PIECE_UNITY_SERVICE_AUTHENTICATION_DEFAULT_CALLBACK_KEY'] = 'callback';
+require_once 'Piece/Unity/Service/Authentication/State.php';
 
 // {{{ Piece_Unity_Service_Authentication
 
 /**
- * A helper class of authentication for the Interceptor_Authentication plug-in.
+ * A helper class which make it easy to mark a user as "authenticated" or
+ * "not authenticated".
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Service_Authentication
- * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
+ * @copyright  2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>, 2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    Release: @package_version@
  * @since      Class available since Release 1.0.0
@@ -71,8 +68,7 @@ class Piece_Unity_Service_Authentication
      * @access private
      */
 
-    var $_serviceName;
-    var $_callback;
+    var $_state;
 
     /**#@-*/
 
@@ -84,162 +80,82 @@ class Piece_Unity_Service_Authentication
     // {{{ constructor
 
     /**
-     * Sets the Piece_Unity_ViewElement object.
+     * Sets a single instance of
+     * Piece_Unity_Service_Authentication_State to the property.
      */
-    function Piece_Unity_Service_Authentication($serviceName = null)
+    function Piece_Unity_Service_Authentication()
     {
-        if (!$serviceName) {
-            $serviceName = $GLOBALS['PIECE_UNITY_SERVICE_AUTHENTICATION_DEFAULT_SERVICE_NAME'];
-        }
-        $this->_serviceName = $serviceName;
-
-        $this->_authenticationsSessionKey  = sprintf('_%s_Services', __CLASS__ );
-        $this->_callbacksSessionKey = sprintf('_%s_Callbacks', __CLASS__ );
-
-        $callback = $this->_getServicesSessionParameter($this->_callbacksSessionKey,
-                                                        $this->_serviceName
-                                                        );
-        if ($callback) {
-            $this->_callback = $callback;
-        } else {
-            $this->_callback = null;
-        }
+        $this->_state = &Piece_Unity_Service_Authentication_State::singleton();
     }
 
     // }}}
     // {{{ login()
 
     /**
-     * Permits the current service.
+     * Marks the user as "authenticated" in the given realm.
      *
-     * @param array  $serviceName
+     * @param string $realm
      */
-    function login()
+    function login($realm = null)
     {
-        $this->_setServicesSessionParameter($this->_authenticationsSessionKey,
-                                            $this->_serviceName, true
-                                            );
+        $this->_state->setIsAuthenticated($realm, true);
     }
 
     // }}}
     // {{{ logout()
 
     /**
-     * Denies the current service.
+     * Marks the user as "not authenticated" in the given realm.
      *
-     * @param array  $serviceName
+     * @param string $realm
      */
-    function logout()
+    function logout($realm = null)
     {
-        $this->_setServicesSessionParameter($this->_authenticationsSessionKey,
-                                            $this->_serviceName, false
-                                            );
+        $this->_state->setIsAuthenticated($realm, false);
     }
 
     // }}}
     // {{{ isAuthenticated()
 
     /**
-     * Returns whether the current service is authenticated.
+     * Returns whether the user is authenticated in the given realm or not.
      *
-     * @param array  $serviceName
+     * @param string $realm
+     * @return boolean
      */
-    function isAuthenticated()
+    function isAuthenticated($realm = null)
     {
-        return $this->_getServicesSessionParameter($this->_authenticationsSessionKey,
-                                                   $this->_serviceName
-                                                   );
+        return $this->_state->isAuthenticated($realm);
     }
 
     // }}}
-    // {{{ catchCallback
+    // {{{ redirectToCallbackURL()
 
     /**
-     * Catches the callback parameter from request parameter.
+     * Redirects to the callback URL for the given realm.
      *
+     * @param string $realm
      */
-    function catchCallback($callbackKey = null)
-    {
-        if (!$callbackKey) {
-            $callbackKey = $GLOBALS['PIECE_UNITY_SERVICE_AUTHENTICATION_DEFAULT_CALLBACK_KEY'];
-        }
-
-        $context = &Piece_Unity_Context::singleton();
-        $request = &$context->getRequest();
-
-        if ($request->hasParameter($callbackKey)) {
-            $this->_callback = $request->getParameter($callbackKey);
-            $this->_setServicesSessionParameter($this->_callbacksSessionKey,
-                                                $this->_serviceName,
-                                                $this->_callback
-                                                );
-        }
-    }
-
-    // }}}
-    // {{{ getCallback
-
-    /**
-     * Returns the catches callback parameter.
-     *
-     * @return mixed
-     */
-    function getCallback()
-    {
-        return $this->_callback;
-    }
-
-    // }}}
-    // {{{ removeCallback
-
-    /**
-     * Removes the catches callback parameter.
-     *
-     * @return mixed
-     */
-    function removeCallback()
-    {
-        $this->_callback = null;
-        $this->_setServicesSessionParameter($this->_callbacksSessionKey,
-                                            $this->_serviceName, null
-                                            );
-    }
-
-    // }}}
-    // {{{ clearCallbacks
-
-    /**
-     * Clears all callback parameters.
-     *
-     * @return mixed
-     */
-    function clearCallback()
+    function redirectToCallbackURL($realm = null)
     {
         $context = &Piece_Unity_Context::singleton();
-        $session = &$context->getSession();
-        $session->removeAttribute($this->_callbacksSessionKey);
-    }
-
-    // }}}
-    // {{{ forwardByCallback()
-
-    /**
-     * 
-     *
-     * @return mixed
-     */
-    function forwardByCallback()
-    {
-        if (!$this->_callback) {
-            return;
-        }
-
-        $path = rawurldecode(html_entity_decode($this->_callback));
-        $url = Piece_Unity_URL::create('http://example.org' . $path);
-
-        $context = &Piece_Unity_Context::singleton();
+        $context->setView($this->_state->getCallbackURL($realm));
         $config = &$context->getConfiguration();
-        $config->setConfiguration('View', 'forcedView', $url);
+        $config->setConfiguration('Renderer_Redirection', 'isExternal', true);
+    }
+
+    // }}}
+    // {{{ hasCallbackURL()
+
+    /**
+     * Returns whether the given realm has the callback URL or not.
+     *
+     * @param string $realm
+     * @return boolean
+     */
+    function hasCallbackURL($realm = null)
+    {
+        return $this->_state->hasCallbackURL($realm);
     }
 
     /**#@-*/
@@ -247,50 +163,6 @@ class Piece_Unity_Service_Authentication
     /**#@+
      * @access private
      */
-
-    // }}}
-    // {{{ _setServicesSessionParameter()
-
-    /**
-     * Sets the services authentication status.
-     */
-    function _setServicesSessionParameter($sessionKey, $serviceName, $parameter)
-    {
-        $context = &Piece_Unity_Context::singleton();
-        $session = &$context->getSession();
-
-        if ($session->hasAttribute($sessionKey)) {
-            $services = $session->getAttribute($sessionKey);
-        } else {
-            $services = array();
-        }
-
-        $services[$serviceName] = $parameter;
-        $session->setAttribute($sessionKey, $services);
-    }
-
-    // }}}
-    // {{{ _getServicesSessionParameter()
-
-    /**
-     * Returns the services authentication status.
-     */
-    function _getServicesSessionParameter($sessionKey, $serviceName)
-    {
-        $context = &Piece_Unity_Context::singleton();
-        $session = &$context->getSession();
-
-        if (!$session->hasAttribute($sessionKey)) {
-            return false;
-        }
-
-        $services = $session->getAttribute($sessionKey);
-        if (!array_key_exists($serviceName, $services)) {
-            return false;
-        }
-
-        return $services[$serviceName];
-    }
 
     /**#@-*/
 

@@ -5,6 +5,7 @@
  * PHP versions 4 and 5
  *
  * Copyright (c) 2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>,
+ *               2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>,
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +31,7 @@
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
+ * @copyright  2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>, 2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    SVN: $Id$
  * @since      File available since Release 1.0.0
@@ -39,9 +40,9 @@
 require_once realpath(dirname(__FILE__) . '/../../../prepare.php');
 require_once 'PHPUnit.php';
 require_once 'Piece/Unity/Service/Authentication.php';
-require_once 'Piece/Unity/Context.php';
 require_once 'Piece/Unity/Config.php';
-require_once 'Piece/Unity/Plugin/View.php';
+require_once 'Piece/Unity/Context.php';
+require_once 'Piece/Unity/Service/Authentication/State.php';
 
 // {{{ Piece_Unity_Service_AuthenticationTestCase
 
@@ -49,8 +50,8 @@ require_once 'Piece/Unity/Plugin/View.php';
  * TestCase for Piece_Unity_Service_Authentication
  *
  * @package    Piece_Unity
- * @subpackage Piece_Unity_Component_Flexy
- * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
+ * @subpackage Piece_Unity_Component_Authentication
+ * @copyright  2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>, 2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    Release: @package_version@
  * @since      Class available since Release 1.0.0
@@ -70,191 +71,99 @@ class Piece_Unity_Service_AuthenticationTestCase extends PHPUnit_TestCase
      * @access private
      */
 
+    var $_authentication;
+
     /**#@-*/
 
     /**#@+
      * @access public
      */
 
+    function setUp()
+    {
+        $this->_authentication = &new Piece_Unity_Service_Authentication();
+        $this->_authentication->logout('Foo');
+    }
+
     function tearDown()
     {
+        Piece_Unity_Service_Authentication_State::clear();
         Piece_Unity_Context::clear();
     }
 
-    function testLogin()
+    function testUserShouldBeMarkedAsAuthenticatedByLogin()
     {
-        $serviceName = 'ExampleServiceForTestLogin';
+        $this->assertFalse($this->_authentication->isAuthenticated('Foo'));
 
-        $authentication = &new Piece_Unity_Service_Authentication($serviceName);
-        $authentication->login();
-        
-        $authenticationSessions = &$this->_getAuthenticationSessions();
+        $this->_authentication->login('Foo');
 
-        $this->assertTrue(array_key_exists($serviceName,
-                                           $authenticationSessions));
-        $this->assertTrue($authenticationSessions[$serviceName]);
-
-        $this->tearDown();
-
-        $serviceName = $GLOBALS['PIECE_UNITY_SERVICE_AUTHENTICATION_DEFAULT_SERVICE_NAME'];
-        $authentication = &new Piece_Unity_Service_Authentication();
-        $authentication->login();
-
-        $authenticationSessions = &$this->_getAuthenticationSessions();
-
-        $this->assertTrue(array_key_exists($serviceName,
-                                           $authenticationSessions));
-        $this->assertTrue($authenticationSessions[$serviceName]);
+        $this->assertTrue($this->_authentication->isAuthenticated('Foo'));
     }
 
-    function testLogout()
+    function testUserShouldBeMarkedAsNotAuthenticatedByLogout()
     {
-        $serviceName = 'ExampleServiceForTestLogout';
+        $this->assertFalse($this->_authentication->isAuthenticated('Foo'));
 
-        $authentication = &new Piece_Unity_Service_Authentication($serviceName);
-        $authentication->logout();
-        
-        $authenticationSessions = &$this->_getAuthenticationSessions();
+        $this->_authentication->login('Foo');
 
-        $this->assertTrue(array_key_exists($serviceName,
-                                           $authenticationSessions));
-        $this->assertFalse($authenticationSessions[$serviceName]);
+        $this->assertTrue($this->_authentication->isAuthenticated('Foo'));
 
-        $this->tearDown();
+        $this->_authentication->logout('Foo');
 
-        $authentication = &new Piece_Unity_Service_Authentication();
-        $authentication->logout();
-        
-        $authenticationSessions = &$this->_getAuthenticationSessions();
-
-        $serviceName = $GLOBALS['PIECE_UNITY_SERVICE_AUTHENTICATION_DEFAULT_SERVICE_NAME'];
-        $this->assertTrue(array_key_exists($serviceName,
-                                           $authenticationSessions));
-        $this->assertFalse($authenticationSessions[$serviceName]);
+        $this->assertFalse($this->_authentication->isAuthenticated('Foo'));
     }
 
-    function testAuthenticationSuccess()
+    function testDefaultRealmShouldBeUsedIfRealmIsNotGiven()
     {
-        $serviceName = 'ExampleServiceForTestAuthenticationSuccess';
+        $this->assertFalse($this->_authentication->isAuthenticated());
 
-        $authenticationSessions = &$this->_getAuthenticationSessions();
-        $authenticationSessions[$serviceName] = true;
+        $this->_authentication->login();
 
-        $authentication = &new Piece_Unity_Service_Authentication($serviceName);
+        $this->assertTrue($this->_authentication->isAuthenticated());
 
-        $this->assertTrue($authentication->isAuthenticated());
+        $this->_authentication->logout();
 
-        $this->tearDown();
-
-        $serviceName = $GLOBALS['PIECE_UNITY_SERVICE_AUTHENTICATION_DEFAULT_SERVICE_NAME'];
-        $authenticationSessions = &$this->_getAuthenticationSessions();
-        $authenticationSessions[$serviceName] = true;
-
-        $authentication = &new Piece_Unity_Service_Authentication();
-
-        $this->assertTrue($authentication->isAuthenticated());
+        $this->assertFalse($this->_authentication->isAuthenticated());
     }
 
-    function testAuthenticationFailureOne()
+    function testRequestShouldBeRedirectedToCallbackURL()
     {
-        $serviceName = 'ExampleServiceForTestAuthenticationFailureOne';
-
-        $authentication = &new Piece_Unity_Service_Authentication($serviceName);
-
-        $this->assertFalse($authentication->isAuthenticated());
-
-        $this->tearDown();
-
-        $authentication = &new Piece_Unity_Service_Authentication();
-
-        $this->assertFalse($authentication->isAuthenticated());
-    }
-
-    function testAuthenticationFailureTwo()
-    {
-        $serviceName = 'ExampleServiceForTestAuthenticationFailureTwo';
-
-        $authenticationSessions = &$this->_getAuthenticationSessions();
-        $authenticationSessions[$serviceName] = false;
-
-        $authentication = &new Piece_Unity_Service_Authentication($serviceName);
-
-        $this->assertFalse($authentication->isAuthenticated());
-
-        $this->tearDown();
-
-        $serviceName = $GLOBALS['PIECE_UNITY_SERVICE_AUTHENTICATION_DEFAULT_SERVICE_NAME'];
-        $authenticationSessions = &$this->_getAuthenticationSessions();
-        $authenticationSessions[$serviceName] = false;
-
-        $authentication = &new Piece_Unity_Service_Authentication();
-
-        $this->assertFalse($authentication->isAuthenticated());
-    }
-
-    function testCatchTheCallbackParameter()
-    {
-        $callback = 'ExampleCallbackParameter';
-
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_GET['callback'] = $callback;
-
-        $authentication = &new Piece_Unity_Service_Authentication();
-        $authentication->catchCallback();
-
-        $this->assertEquals($callback, $authentication->getCallback());
-
-        $this->tearDown();
-        unset($_GET['callback']);
-
-        $callback = 'ExampleCallbackParameter2';
-        $serviceName = $GLOBALS['PIECE_UNITY_SERVICE_AUTHENTICATION_DEFAULT_SERVICE_NAME'];
-
-        $callbacks = &$this->_getCallbackSessions();
-        $callbacks[$serviceName] = $callback;
-
-        $authentication = &new Piece_Unity_Service_Authentication();
-        $authentication->catchCallback();
-
-        $this->assertEquals($callback, $authentication->getCallback());
-
-        $authentication->removeCallback();
-        
-        $this->assertNull($authentication->getCallback());
-        $this->assertNull($callbacks[$serviceName]);
-
-        $authentication->catchCallback();
-
-        $this->assertNull($authentication->getCallback());
-        $this->assertNull($callbacks[$serviceName]);
-    }
-
-    function testForwardingByCallbackParameter()
-    {
-        $callback = '/path/to/example.html';
-
-        $_SERVER['SERVER_NAME'] = 'example.org';
-        $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_GET['callback'] = $callback;
-
+        $state = &Piece_Unity_Service_Authentication_State::singleton();
+        $state->setCallbackURL(null, 'http://example.org/path/to/callback.php');
         $config = &new Piece_Unity_Config();
         $context = &Piece_Unity_Context::singleton();
         $context->setConfiguration($config);
 
-        $authentication = &new Piece_Unity_Service_Authentication();
-        $authentication->catchCallback();
+        $this->assertFalse($this->_authentication->isAuthenticated());
 
-        $this->assertEquals($callback, $authentication->getCallback());
+        $this->_authentication->login();
 
-        $authentication->forwardByCallback();
+        $this->assertTrue($this->_authentication->hasCallbackURL());
 
-        $view = &new Piece_Unity_Plugin_View();
-        $view->invoke();
+        $this->_authentication->redirectToCallbackURL();
 
-        $this->assertEquals('http://example.org/path/to/example.html',
-                            $context->getView()
-                            );
+        $this->assertEquals('http://example.org/path/to/callback.php', $context->getView());
+        $this->assertTrue($config->getConfiguration('Renderer_Redirection', 'isExternal'));
+    }
+
+    function testRequestShouldBeRedirectedToCallbackURLWithSpecifiedRealm()
+    {
+        $state = &Piece_Unity_Service_Authentication_State::singleton();
+        $state->setCallbackURL('Foo', 'http://example.org/path/to/callback.php');
+        $config = &new Piece_Unity_Config();
+        $context = &Piece_Unity_Context::singleton();
+        $context->setConfiguration($config);
+
+        $this->assertFalse($this->_authentication->isAuthenticated('Foo'));
+
+        $this->_authentication->login('Foo');
+
+        $this->assertTrue($this->_authentication->hasCallbackURL('Foo'));
+
+        $this->_authentication->redirectToCallbackURL('Foo');
+
+        $this->assertEquals('http://example.org/path/to/callback.php', $context->getView());
+        $this->assertTrue($config->getConfiguration('Renderer_Redirection', 'isExternal'));
     }
 
     /**#@-*/
@@ -262,28 +171,6 @@ class Piece_Unity_Service_AuthenticationTestCase extends PHPUnit_TestCase
     /**#@+
      * @access private
      */
-
-    function &_getAuthenticationSessions()
-    {
-        $context = &Piece_Unity_Context::singleton();
-        $session = &$context->getSession();
-
-        $authenticationSessions =
-            &$session->getAttribute('_Piece_Unity_Service_Authentication_Services');
-
-        return $authenticationSessions;
-    }
-
-    function &_getCallbackSessions()
-    {
-        $context = &Piece_Unity_Context::singleton();
-        $session = &$context->getSession();
-
-        $callbacks =
-            &$session->getAttribute('_Piece_Unity_Service_Authentication_Callbacks');
-
-        return $callbacks;
-    }
 
     /**#@-*/
 
