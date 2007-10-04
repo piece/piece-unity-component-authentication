@@ -98,6 +98,8 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
      */
     function invoke()
     {
+        $this->_prepareAuthenticationState();
+
         $url = $this->_getConfiguration('url');
         if (!$url) {
             Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
@@ -138,6 +140,10 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
             }
         }
 
+        $session = &$this->_context->getSession();
+        $session->setPreloadCallback('_Interceptor_Authentication_StateLoader', array(__CLASS__, 'loadAuthenticationState'));
+        $session->addPreloadClass('_Interceptor_Authentication_StateLoader', 'Piece_Unity_Service_Autentication_State');
+
         if (!$isProtectedResource) {
             return true;
         }
@@ -147,12 +153,14 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
             if ($this->_authenticationState->hasCallbackURL($realm)) {
                 $this->_authenticationState->removeCallbackURL($realm);
             }
+
             return true;
         } else {
             $session = &$this->_context->getSession();
             $session->setAttribute('redirected', true);
             $this->_storeRequestedURL($realm);
             $this->_context->setView($url);
+
             return false;
         }
     }
@@ -197,8 +205,6 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
                 $this->_scriptName = preg_replace("!^$proxyPath!", '', $this->_scriptName);
             }
         }
-
-        $this->_prepareAuthenticationState();
     }
  
     // }}}
@@ -255,15 +261,9 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
         $authenticationState = &$session->getAttribute($GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey']);
         if (is_null($authenticationState)) {
             $authenticationState = &Piece_Unity_Service_Authentication_State::singleton();
-            $session->setAttributeByRef($GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey'],
-                                        $authenticationState
-                                        );
-            $session->setPreloadCallback('_Interceptor_Authentication',
-                                         array(__CLASS__, 'loadAuthenticationState')
-                                         );
-            $session->addPreloadClass('_Interceptor_Authentication',
-                                      'Piece_Unity_Service_Authentication_State'
-                                      );
+            $session->setAttributeByRef($GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey'], $authenticationState);
+            $session->setPreloadCallback('_Interceptor_Authentication', array('Piece_Unity_Plugin_Factory', 'factory'));
+            $session->addPreloadClass('_Interceptor_Authentication', 'Interceptor_Authentication');
         } else {
             Piece_Unity_Service_Authentication_State::setInstance($authenticationState);
         }
