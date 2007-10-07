@@ -20,7 +20,7 @@
   <active>yes</active>
  </developer>
  <date>2007-10-07</date>
- <time>13:56:06</time>
+ <time>14:16:08</time>
  <version>
   <release>1.0.0</release>
   <api>1.0.0</api>
@@ -32,7 +32,7 @@
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License (revised)</license>
  <notes>The first stable release of Piece_Unity_Component_Authentication.
 
-This release is not completely backward compatible with release 0.13.
+*** Note that this release is not completely backward compatible with release 0.13. ***
 
 What&apos;s New in Piece_Unity_Component_Authentication 1.0.0
 
@@ -119,7 +119,7 @@ What&apos;s New in Piece_Unity_Component_Authentication 1.0.0
    <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License (revised)</license>
    <notes>The first stable release of Piece_Unity_Component_Authentication.
 
-This release is not completely backward compatible with release 0.13.
+*** Note that this release is not completely backward compatible with release 0.13. ***
 
 What&apos;s New in Piece_Unity_Component_Authentication 1.0.0
 

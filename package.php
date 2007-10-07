@@ -47,7 +47,7 @@ $apiVersion = '1.0.0';
 $apiStability = 'stable';
 $notes = 'The first stable release of Piece_Unity_Component_Authentication.
 
-This release is not completely backward compatible with release 0.13.
+*** Note that this release is not completely backward compatible with release 0.13. ***
 
 What\'s New in Piece_Unity_Component_Authentication 1.0.0
 
