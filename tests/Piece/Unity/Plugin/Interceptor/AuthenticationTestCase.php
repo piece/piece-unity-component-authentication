@@ -4,7 +4,7 @@
 /**
  * PHP versions 4 and 5
  *
- * Copyright (c) 2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>,
+ * Copyright (c) 2006-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>,
  *               2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>,
  * All rights reserved.
  *
@@ -31,10 +31,10 @@
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>, 2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
+ * @copyright  2006-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    SVN: $Id$
- * @see        Piece_Unity_Plugin_Interceptor_Authentication
  * @since      File available since Release 0.13.0
  */
 
@@ -54,10 +54,10 @@ require_once 'Piece/Unity/Service/Authentication/State.php';
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>, 2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
+ * @copyright  2006-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    Release: @package_version@
- * @see        Piece_Unity_Plugin_Interceptor_Authentication
  * @since      Class available since Release 0.13.0
  */
 class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_TestCase
@@ -562,6 +562,68 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $this->assertEquals('http://example.org/admin/foo.php',
                             $authenticationState->getCallbackURL(null)
                             );
+    }
+
+    /**
+     * @since Method available since Release 1.1.0
+     */
+    function testShouldIncludeUrisByIncludes()
+    {
+        $_SERVER['SERVER_NAME'] = 'example.org';
+        $_SERVER['SERVER_PORT'] = '80';
+        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $configurations = array('realm' => 'Foo',
+                                'url' => 'http://example.org/authenticate.php',
+                                'includes' => array('^/admin/.*')
+                                );
+        $this->_configure($configurations);
+        $interceptor = &new Piece_Unity_Plugin_Interceptor_Authentication();
+        $interceptor->invoke();
+
+        $this->assertEquals('http://example.org/authenticate.php',
+                            $this->_context->getView()
+                            );
+    }
+
+    /**
+     * @since Method available since Release 1.1.0
+     */
+    function testShouldIncludeUrisByResourcesMatch()
+    {
+        $_SERVER['SERVER_NAME'] = 'example.org';
+        $_SERVER['SERVER_PORT'] = '80';
+        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $configurations = array('realm' => 'Foo',
+                                'url' => 'http://example.org/authenticate.php',
+                                'resourcesMatch' => array('^/admin/.*')
+                                );
+        $this->_configure($configurations);
+        $interceptor = &new Piece_Unity_Plugin_Interceptor_Authentication();
+        $interceptor->invoke();
+
+        $this->assertEquals('http://example.org/authenticate.php',
+                            $this->_context->getView()
+                            );
+    }
+
+    /**
+     * @since Method available since Release 1.1.0
+     */
+    function testShouldExcludeUrisByExcludes()
+    {
+        $_SERVER['SERVER_NAME'] = 'example.org';
+        $_SERVER['SERVER_PORT'] = '80';
+        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $configurations = array('realm' => 'Foo',
+                                'url' => 'http://example.org/authenticate.php',
+                                'includes' => array('^/admin/.*'),
+                                'excludes' => array('^/admin/foo\.php$')
+                                );
+        $this->_configure($configurations);
+        $interceptor = &new Piece_Unity_Plugin_Interceptor_Authentication();
+        $interceptor->invoke();
+
+        $this->assertEquals('Foo', $this->_context->getView());
     }
 
     /**#@-*/

@@ -4,7 +4,7 @@
 /**
  * PHP versions 4 and 5
  *
- * Copyright (c) 2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>,
+ * Copyright (c) 2006-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>,
  *               2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>,
  * All rights reserved.
  *
@@ -31,7 +31,8 @@
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>, 2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
+ * @copyright  2006-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    SVN: $Id$
  * @since      File available since Release 0.13.0
@@ -50,14 +51,15 @@ $GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey']
 // {{{ Piece_Unity_Plugin_Interceptor_Authentication
 
 /**
- * An interceptor to control the access to resources which can be accessed
- * only by authenticated users.
+ * An interceptor to control the access to resources which can be accessed only by
+ * authenticated users.
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>, 2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
+ * @copyright  2006-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
- * @version    Release: @package_version@
+ * @version    Release: 1.0.0
  * @since      Class available since Release 0.13.0
  */
 class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_Common
@@ -108,18 +110,34 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
             return;
         }
 
-        $isProtectedResource = false;
-        $resourcesMatch = $this->_getConfiguration('resourcesMatch');
-        if ($resourcesMatch) {
-            if (!is_array($resourcesMatch)) {
+        $excludes = $this->_getConfiguration('excludes');
+        if ($excludes) {
+            if (!is_array($excludes)) {
                 Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                        "The value of the configuration point [ resourcesMatch ] on the plug-in [ {$this->_name} ] should be an array."
+                                        "The value of the configuration point [ excludes ] on the plug-in [ {$this->_name} ] should be an array."
                                         );
                 return;
             }
 
-            foreach ($resourcesMatch as $resource) {
-                if (preg_match("!$resource!", $this->_scriptName)) {
+            foreach ($excludes as $exclude) {
+                if (preg_match("!$exclude!", $this->_scriptName)) {
+                    return true;
+                }
+            }
+        }
+
+        $isProtectedResource = false;
+        $includes = $this->_getConfiguration('includes');
+        if ($includes) {
+            if (!is_array($includes)) {
+                Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
+                                        "The value of the configuration point [ includes ] on the plug-in [ {$this->_name} ] should be an array."
+                                        );
+                return;
+            }
+
+            foreach ($includes as $include) {
+                if (preg_match("!$include!", $this->_scriptName)) {
                     $isProtectedResource = true;
                     break;
                 }
@@ -141,8 +159,12 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
         }
 
         $session = &$this->_context->getSession();
-        $session->setPreloadCallback('_Interceptor_Authentication_StateLoader', array(__CLASS__, 'loadAuthenticationState'));
-        $session->addPreloadClass('_Interceptor_Authentication_StateLoader', 'Piece_Unity_Service_Autentication_State');
+        $session->setPreloadCallback('_Interceptor_Authentication_StateLoader',
+                                     array(__CLASS__, 'loadAuthenticationState')
+                                     );
+        $session->addPreloadClass('_Interceptor_Authentication_StateLoader',
+                                  'Piece_Unity_Service_Autentication_State'
+                                  );
 
         if (!$isProtectedResource) {
             return true;
@@ -194,15 +216,20 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
     function _initialize()
     {
         $this->_addConfigurationPoint('realm');
-        $this->_addConfigurationPoint('resourcesMatch', array());
-        $this->_addConfigurationPoint('resources', array());
+        $this->_addConfigurationPoint('resourcesMatch', array()); // deprecated
+        $this->_addConfigurationPoint('resources', array());      // deprecated
         $this->_addConfigurationPoint('url');
+        $this->_addConfigurationPoint('excludes', array());
+        $this->_addConfigurationPoint('includes',
+                                      $this->_getConfiguration('resourcesMatch')
+                                      );
 
         $this->_scriptName = $this->_context->getScriptName();
         if ($this->_context->usingProxy()) {
             $proxyPath = $this->_context->getProxyPath();
             if (!is_null($proxyPath)) {
-                $this->_scriptName = preg_replace("!^$proxyPath!", '', $this->_scriptName);
+                $this->_scriptName =
+                    preg_replace("!^$proxyPath!", '', $this->_scriptName);
             }
         }
     }
@@ -217,7 +244,9 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
      */
     function _storeRequestedURL($realm)
     {
-        if (!array_key_exists('QUERY_STRING', $_SERVER) || !strlen($_SERVER['QUERY_STRING'])) {
+        if (!array_key_exists('QUERY_STRING', $_SERVER)
+            || !strlen($_SERVER['QUERY_STRING'])
+            ) {
             $query = '';
         } else {
             $query = "?{$_SERVER['QUERY_STRING']}";
@@ -252,18 +281,22 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
     // {{{ _prepareAuthenticationState()
 
     /**
-     * Sets the Piece_Unity_Service_Authentication_State object to
-     * the session.
+     * Sets the Piece_Unity_Service_Authentication_State object to the session.
      */
     function _prepareAuthenticationState()
     {
         $session = &$this->_context->getSession();
         $authenticationState = &$session->getAttribute($GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey']);
         if (is_null($authenticationState)) {
-            $authenticationState = &Piece_Unity_Service_Authentication_State::singleton();
+            $authenticationState =
+                &Piece_Unity_Service_Authentication_State::singleton();
             $session->setAttributeByRef($GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey'], $authenticationState);
-            $session->setPreloadCallback('_Interceptor_Authentication', array('Piece_Unity_Plugin_Factory', 'factory'));
-            $session->addPreloadClass('_Interceptor_Authentication', 'Interceptor_Authentication');
+            $session->setPreloadCallback('_Interceptor_Authentication',
+                                         array('Piece_Unity_Plugin_Factory', 'factory')
+                                         );
+            $session->addPreloadClass('_Interceptor_Authentication',
+                                      'Interceptor_Authentication'
+                                      );
         } else {
             Piece_Unity_Service_Authentication_State::setInstance($authenticationState);
         }
