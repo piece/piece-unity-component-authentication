@@ -59,7 +59,7 @@ $GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey']
  * @copyright  2006-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
  * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
- * @version    Release: 1.0.0
+ * @version    Release: @package_version@
  * @since      Class available since Release 0.13.0
  */
 class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_Common
