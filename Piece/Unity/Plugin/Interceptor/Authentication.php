@@ -315,4 +315,3 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
  * indent-tabs-mode: nil
  * End:
  */
-?>

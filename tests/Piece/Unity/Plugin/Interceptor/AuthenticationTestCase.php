@@ -667,4 +667,3 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
  * indent-tabs-mode: nil
  * End:
  */
-?>

@@ -191,4 +191,3 @@ class Piece_Unity_Service_AuthenticationTestCase extends PHPUnit_TestCase
  * indent-tabs-mode: nil
  * End:
  */
-?>

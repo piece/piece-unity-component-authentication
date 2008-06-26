@@ -183,4 +183,3 @@ class Piece_Unity_Service_Authentication
  * indent-tabs-mode: nil
  * End:
  */
-?>
