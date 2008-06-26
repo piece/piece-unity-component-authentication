@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package packagerversion="1.6.2" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+<package packagerversion="1.7.2" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
     http://pear.php.net/dtd/tasks-1.0.xsd
     http://pear.php.net/dtd/package-2.0
     http://pear.php.net/dtd/package-2.0.xsd">
@@ -19,10 +19,10 @@
   <email>kumatch@users.sourceforge.net</email>
   <active>yes</active>
  </developer>
- <date>2007-10-07</date>
- <time>14:16:08</time>
+ <date>2008-06-26</date>
+ <time>20:44:55</time>
  <version>
-  <release>1.0.0</release>
+  <release>1.1.0</release>
   <api>1.0.0</api>
  </version>
  <stability>
@@ -30,14 +30,9 @@
   <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License (revised)</license>
- <notes>The first stable release of Piece_Unity_Component_Authentication.
+ <notes>A new release of Piece_Unity_Component_Authentication is now available.
 
-*** Note that this release is not completely backward compatible with release 0.13. ***
-
-What&apos;s New in Piece_Unity_Component_Authentication 1.0.0
-
- * New configuration points for Interceptor_Authentication plug-in: All configuration points have been renewed for more ease of use.
- * The client interface for managing authentication states: Piece_Unity_Service_Authentication has been added for managing authentication states. This will make it easy to mark a user as &quot;authenticated&quot; or &quot;not authenticated&quot;.</notes>
+What&apos;s New in Piece_Unity_Component_Authentication 1.1.0</notes>
  <contents>
   <dir baseinstalldir="/" name="/">
    <dir name="docs">
@@ -106,6 +101,21 @@ What&apos;s New in Piece_Unity_Component_Authentication 1.0.0
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>1.1.0</release>
+    <api>1.0.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2008-06-26</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License (revised)</license>
+   <notes>A new release of Piece_Unity_Component_Authentication is now available.
+
+What&apos;s New in Piece_Unity_Component_Authentication 1.1.0</notes>
+  </release>
   <release>
    <version>
     <release>1.0.0</release>

@@ -4,8 +4,7 @@
 /**
  * PHP versions 4 and 5
  *
- * Copyright (c) 2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>,
- *               2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>,
+ * Copyright (c) 2007-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +30,7 @@
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2006-2007 KUBO Atsuhiro <iteman@users.sourceforge.net>, 2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
+ * @copyright  2007-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    SVN: $Id$
  * @since      File available since Release 0.13.0
@@ -41,30 +40,22 @@ require_once 'PEAR/PackageFileManager2.php';
 
 PEAR::staticPushErrorHandling(PEAR_ERROR_CALLBACK, create_function('$error', 'var_dump($error); exit();'));
 
-$releaseVersion = '1.0.0';
+$releaseVersion = '1.1.0';
 $releaseStability = 'stable';
 $apiVersion = '1.0.0';
 $apiStability = 'stable';
-$notes = 'The first stable release of Piece_Unity_Component_Authentication.
+$notes = 'A new release of Piece_Unity_Component_Authentication is now available.
 
-*** Note that this release is not completely backward compatible with release 0.13. ***
-
-What\'s New in Piece_Unity_Component_Authentication 1.0.0
-
- * New configuration points for Interceptor_Authentication plug-in: All configuration points have been renewed for more ease of use.
- * The client interface for managing authentication states: Piece_Unity_Service_Authentication has been added for managing authentication states. This will make it easy to mark a user as "authenticated" or "not authenticated".';
+What\'s New in Piece_Unity_Component_Authentication 1.1.0';
 
 $package = new PEAR_PackageFileManager2();
-$package->setOptions(array('filelistgenerator' => 'svn',
+$package->setOptions(array('filelistgenerator' => 'file',
                            'changelogoldtonew' => false,
                            'simpleoutput'      => true,
                            'baseinstalldir'    => '/',
                            'packagefile'       => 'package.xml',
                            'packagedirectory'  => '.',
-                           'dir_roles'         => array('data' => 'data',
-                                                        'tests' => 'test',
-                                                        'docs' => 'doc'),
-                           'ignore'            => array('package.php', 'package.xml')
+                           'ignore'            => array('package.php')
                            )
                      );
 
