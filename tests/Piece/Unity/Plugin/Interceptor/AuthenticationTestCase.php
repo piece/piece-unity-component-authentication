@@ -50,7 +50,7 @@ require_once 'Piece/Unity/Service/Authentication/State.php';
 // {{{ Piece_Unity_Plugin_Interceptor_AuthenticationTestCase
 
 /**
- * TestCase for Piece_Unity_Plugin_Interceptor_Authentication
+ * Some tests for Piece_Unity_Plugin_Interceptor_Authentication.
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
@@ -86,7 +86,6 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
 
     function setUp()
     {
-        Piece_Unity_Error::pushCallback(create_function('$error', 'var_dump($error); return ' . PEAR_ERRORSTACK_DIE . ';'));
         $this->_oldScriptName = $_SERVER['SCRIPT_NAME'];
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SESSION = array();
@@ -105,7 +104,6 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $_SERVER['SCRIPT_NAME'] = $this->_oldScriptName;
         Piece_Unity_Context::clear();
         Piece_Unity_Error::clearErrors();
-        Piece_Unity_Error::popCallback();
     }
 
     /**
