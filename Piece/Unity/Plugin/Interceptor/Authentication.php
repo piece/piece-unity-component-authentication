@@ -40,7 +40,6 @@
 
 require_once 'Piece/Unity/Plugin/Common.php';
 require_once 'Piece/Unity/Error.php';
-require_once 'Piece/Unity/ClassLoader.php';
 require_once 'Piece/Unity/Service/Authentication/State.php';
 
 // {{{ GLOBALS
@@ -94,9 +93,6 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
      *
      * @return boolean
      * @throws PIECE_UNITY_ERROR_INVALID_CONFIGURATION
-     * @throws PIECE_UNITY_ERROR_NOT_FOUND
-     * @throws PIECE_UNITY_ERROR_NOT_READABLE
-     * @throws PIECE_UNITY_ERROR_CANNOT_READ
      */
     function invoke()
     {
