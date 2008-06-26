@@ -178,8 +178,6 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
 
             return true;
         } else {
-            $session = &$this->_context->getSession();
-            $session->setAttribute('redirected', true);
             $this->_storeRequestedURL($realm);
             $this->_context->setView($url);
 
