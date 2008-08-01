@@ -624,6 +624,73 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $this->assertEquals('Foo', $this->_context->getView());
     }
 
+    /**
+     * @since Method available since Release 1.1.0
+     */
+    function testShouldExcludeTheAuthenticationUri()
+    {
+        $_SERVER['SERVER_NAME'] = 'example.org';
+        $_SERVER['SERVER_PORT'] = '80';
+        $_SERVER['SCRIPT_NAME'] = '/users/authenticate.php';
+        $configurations = array('realm'     => 'Foo',
+                                'url'       => 'http://example.org/users/authenticate.php',
+                                'includes' => array('^/.*')
+                                );
+        $this->_configure($configurations);
+        $interceptor = &new Piece_Unity_Plugin_Interceptor_Authentication();
+        $interceptor->invoke();
+
+        $this->assertEquals('Foo', $this->_context->getView());
+    }
+
+    /**
+     * @since Method available since Release 1.1.0
+     */
+    function testShouldExcludeTheAuthenticationUriWithProxy()
+    {
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '1.2.3.4';
+        $_SERVER['HTTP_X_FORWARDED_SERVER'] = 'example.org';
+        $_SERVER['SERVER_NAME'] = 'foo.example.org';
+        $_SERVER['SERVER_PORT'] = '8201';
+        $_SERVER['SCRIPT_NAME'] = '/users/authenticate.php';
+        $configurations = array('realm'     => 'Foo',
+                                'url'       => 'http://example.org/foo/users/authenticate.php',
+                                'includes' => array('^/.*')
+                                );
+        $this->_configure($configurations);
+        $context = &Piece_Unity_Context::singleton();
+        $context->setProxyPath('/foo');
+        $interceptor = &new Piece_Unity_Plugin_Interceptor_Authentication();
+        $interceptor->invoke();
+
+        $this->assertEquals('Foo', $this->_context->getView());
+
+        unset($_SERVER['HTTP_X_FORWARDED_FOR']);
+        unset($_SERVER['HTTP_X_FORWARDED_SERVER']);
+    }
+
+
+    /**
+     * @since Method available since Release 1.1.0
+     */
+    function testShouldExcludeTheAuthenticationUriWithDirectAccessToABackendServer()
+    {
+        $_SERVER['SERVER_NAME'] = 'foo.example.org';
+        $_SERVER['SERVER_PORT'] = '8201';
+        $_SERVER['SCRIPT_NAME'] = '/users/authenticate.php';
+        $configurations = array('realm'     => 'Foo',
+                                'url'       => 'http://example.org/foo/users/authenticate.php',
+                                'includes' => array('^/.*')
+                                );
+        $this->_configure($configurations);
+        $context = &Piece_Unity_Context::singleton();
+        $context->setProxyPath('/foo');
+        $interceptor = &new Piece_Unity_Plugin_Interceptor_Authentication();
+        $interceptor->invoke();
+
+        $this->assertEquals('Foo', $this->_context->getView());
+    }
+
     /**#@-*/
 
     /**#@+
