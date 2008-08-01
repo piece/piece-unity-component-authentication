@@ -41,6 +41,7 @@
 require_once 'Piece/Unity/Plugin/Common.php';
 require_once 'Piece/Unity/Error.php';
 require_once 'Piece/Unity/Service/Authentication/State.php';
+require_once 'Net/URL.php';
 
 // {{{ GLOBALS
 
@@ -106,6 +107,10 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
             return;
         }
 
+        if ($this->_isAuthenticationURL($url)) {
+            return true;
+        }
+            
         $excludes = $this->_getConfiguration('excludes');
         if ($excludes) {
             if (!is_array($excludes)) {
@@ -218,14 +223,8 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
                                       $this->_getConfiguration('resourcesMatch')
                                       );
 
-        $this->_scriptName = $this->_context->getScriptName();
-        if ($this->_context->usingProxy()) {
-            $proxyPath = $this->_context->getProxyPath();
-            if (!is_null($proxyPath)) {
-                $this->_scriptName =
-                    preg_replace("!^$proxyPath!", '', $this->_scriptName);
-            }
-        }
+        $this->_scriptName =
+            $this->_context->removeProxyPath($this->_context->getScriptName());
     }
  
     // }}}
@@ -296,6 +295,21 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
         }
 
         $this->_authenticationState = &$authenticationState;
+    }
+
+    // }}}
+    // {{{ _isAuthenticationURL()
+
+    /**
+     * Checks whether the requested URI is the authentication URI or not.
+     *
+     * @param string $authenticationURL
+     * @return boolean
+     */
+    function _isAuthenticationURL($authenticationURL)
+    {
+        $url = &new Net_URL($authenticationURL);
+        return $this->_context->removeProxyPath($url->path) == $this->_scriptName;
     }
 
     /**#@-*/
