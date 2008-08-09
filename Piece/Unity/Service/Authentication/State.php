@@ -4,7 +4,7 @@
 /**
  * PHP versions 4 and 5
  *
- * Copyright (c) 2007 KUBO Atsuhiro <iteman@users.sourceforge.net>,
+ * Copyright (c) 2007-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>,
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2007 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2007-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    SVN: $Id$
  * @since      File available since Release 1.0.0
@@ -49,7 +49,7 @@ $GLOBALS['PIECE_UNITY_Service_Authentication_State_DefaultRealm'] = '_default';
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2007 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2007-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    Release: @package_version@
  * @since      Class available since Release 1.0.0
@@ -81,9 +81,9 @@ class Piece_Unity_Service_Authentication_State
     // {{{ singleton()
 
     /**
-     * Returns the Piece_Unity_Service_Authentication_State instance if
-     * it exists. If it not exists, a new instance of
-     * Piece_Unity_Service_Authentication_State will be created and returned.
+     * Returns the Piece_Unity_Service_Authentication_State instance if it exists. If
+     * it not exists, a new instance of Piece_Unity_Service_Authentication_State will
+     * be created and returned.
      *
      * @return Piece_Unity_Service_Authentication_State
      * @static
@@ -101,8 +101,7 @@ class Piece_Unity_Service_Authentication_State
     // {{{ setIsAuthenticated()
 
     /**
-     * Marks the user as "authenticated" or "not authenticated" in the given
-     * realm.
+     * Marks the user as "authenticated" or "not authenticated" in the given realm.
      *
      * @param string  $realm
      * @param boolean $isAuthenticated
@@ -124,15 +123,15 @@ class Piece_Unity_Service_Authentication_State
     function isAuthenticated($realm)
     {
         $realm = $this->_getRealm($realm);
-        if (array_key_exists($realm, $this->_statesByRealm)) {
-            if (array_key_exists('isAuthenticated', $this->_statesByRealm[$realm])) {
-                return $this->_statesByRealm[$realm]['isAuthenticated'];
-            } else {
-                return false;
-            }
-        } else {
+        if (!array_key_exists($realm, $this->_statesByRealm)) {
             return false;
         }
+
+        if (!array_key_exists('isAuthenticated', $this->_statesByRealm[$realm])) {
+            return false;
+        }
+
+        return $this->_statesByRealm[$realm]['isAuthenticated'];
     }
 
     // }}}
@@ -202,15 +201,11 @@ class Piece_Unity_Service_Authentication_State
     function hasCallbackURL($realm)
     {
         $realm = $this->_getRealm($realm);
-        if (array_key_exists($realm, $this->_statesByRealm)) {
-            if (array_key_exists('callbackURL', $this->_statesByRealm[$realm])) {
-                return $this->_statesByRealm[$realm]['callbackURL'];
-            } else {
-                return false;
-            }
-        } else {
+        if (!array_key_exists($realm, $this->_statesByRealm)) {
             return false;
         }
+
+        return array_key_exists('callbackURL', $this->_statesByRealm[$realm]);
     }
 
     // }}}
@@ -245,9 +240,9 @@ class Piece_Unity_Service_Authentication_State
     {
         if (is_null($realm)) {
             return $GLOBALS['PIECE_UNITY_Service_Authentication_State_DefaultRealm'];
-        } else {
-            return $realm;
         }
+
+        return $realm;
     }
 
     /**#@-*/
