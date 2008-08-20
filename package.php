@@ -75,7 +75,6 @@ $package->setPhpDep('4.3.0');
 $package->setPearinstallerDep('1.4.3');
 $package->addPackageDepWithChannel('required', 'Piece_Unity', 'pear.piece-framework.com', '1.5.0');
 $package->addPackageDepWithChannel('required', 'Net_URL', 'pear.php.net', '1.0.14');
-$package->addPackageDepWithChannel('required', 'PEAR', 'pear.php.net', '1.4.3');
 $package->addMaintainer('lead', 'iteman', 'KUBO Atsuhiro', 'iteman@users.sourceforge.net');
 $package->addMaintainer('developer', 'kumatch', 'KUMAKURA Yousuke', 'kumatch@users.sourceforge.net');
 $package->addGlobalReplacement('package-info', '@package_version@', 'version');
