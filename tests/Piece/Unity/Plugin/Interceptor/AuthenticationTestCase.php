@@ -115,7 +115,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
         $configurations = array('realm'     => 'Foo',
-                                'url'       => 'http://example.org/authenticate.php',
+                                'uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -136,7 +136,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
         $configurations = array('realm'     => 'Foo',
-                                'url'       => 'http://example.org/authenticate.php',
+                                'uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -157,7 +157,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
         $configurations = array('realm'     => 'Foo',
-                                'url'       => 'http://example.org/authenticate.php',
+                                'uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -180,7 +180,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/foo.php';
         $configurations = array('realm'     => 'Foo',
-                                'url'       => 'http://example.org/authenticate.php',
+                                'uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -201,7 +201,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/foo.php';
         $configurations = array('realm'     => 'Foo',
-                                'url'       => 'http://example.org/authenticate.php',
+                                'uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -222,7 +222,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/foo.php';
         $configurations = array('realm'     => 'Foo',
-                                'url'       => 'http://example.org/authenticate.php',
+                                'uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -240,7 +240,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
-        $configurations = array('url'       => 'http://example.org/authenticate.php',
+        $configurations = array('uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -260,7 +260,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
-        $configurations = array('url'       => 'http://example.org/authenticate.php',
+        $configurations = array('uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -277,12 +277,12 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
     /**
      * @since Method available since Release 1.0.0
      */
-    function testRequestedURLShouldNotBeStoredIfAuthenticated()
+    function testRequestedURIShouldNotBeStoredIfAuthenticated()
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
-        $configurations = array('url'       => 'http://example.org/authenticate.php',
+        $configurations = array('uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -295,19 +295,19 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
 
         $authenticationState = &Piece_Unity_Service_Authentication_State::singleton();
 
-        $this->assertFalse($authenticationState->hasCallbackURL(null));
-        $this->assertNull($authenticationState->getCallbackURL(null));
+        $this->assertFalse($authenticationState->hasCallbackURI(null));
+        $this->assertNull($authenticationState->getCallbackURI(null));
     }
 
     /**
      * @since Method available since Release 1.0.0
      */
-    function testRequestedURLShouldBeStoredIfNotAuthenticated1()
+    function testRequestedURIShouldBeStoredIfNotAuthenticated1()
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
-        $configurations = array('url'       => 'http://example.org/authenticate.php',
+        $configurations = array('uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -320,21 +320,21 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
 
         $authenticationState = &Piece_Unity_Service_Authentication_State::singleton();
 
-        $this->assertTrue($authenticationState->hasCallbackURL(null));
+        $this->assertTrue($authenticationState->hasCallbackURI(null));
         $this->assertEquals('http://example.org/admin/foo.php',
-                            $authenticationState->getCallbackURL(null)
+                            $authenticationState->getCallbackURI(null)
                             );
     }
 
     /**
      * @since Method available since Release 1.0.0
      */
-    function testRequestedURLShouldBeStoredIfNotAuthenticated2()
+    function testRequestedURIShouldBeStoredIfNotAuthenticated2()
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '443';
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
-        $configurations = array('url'       => 'http://example.org/authenticate.php',
+        $configurations = array('uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -347,21 +347,21 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
 
         $authenticationState = &Piece_Unity_Service_Authentication_State::singleton();
 
-        $this->assertTrue($authenticationState->hasCallbackURL(null));
+        $this->assertTrue($authenticationState->hasCallbackURI(null));
         $this->assertEquals('https://example.org/admin/foo.php',
-                            $authenticationState->getCallbackURL(null)
+                            $authenticationState->getCallbackURI(null)
                             );
     }
 
     /**
      * @since Method available since Release 1.0.0
      */
-    function testRequestedURLShouldBeStoredIfNotAuthenticated3()
+    function testRequestedURIShouldBeStoredIfNotAuthenticated3()
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '8201';
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
-        $configurations = array('url'       => 'http://example.org/authenticate.php',
+        $configurations = array('uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -374,21 +374,21 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
 
         $authenticationState = &Piece_Unity_Service_Authentication_State::singleton();
 
-        $this->assertTrue($authenticationState->hasCallbackURL(null));
+        $this->assertTrue($authenticationState->hasCallbackURI(null));
         $this->assertEquals('http://example.org:8201/admin/foo.php',
-                            $authenticationState->getCallbackURL(null)
+                            $authenticationState->getCallbackURI(null)
                             );
     }
 
     /**
      * @since Method available since Release 1.0.0
      */
-    function testCallbackURLShouldBeKeptUntilProtectedResourceIsRequested()
+    function testCallbackURIShouldBeKeptUntilProtectedResourceIsRequested()
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
-        $configurations = array('url'       => 'http://example.org/authenticate.php',
+        $configurations = array('uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -401,15 +401,15 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
 
         $authenticationState = &Piece_Unity_Service_Authentication_State::singleton();
 
-        $this->assertTrue($authenticationState->hasCallbackURL(null));
+        $this->assertTrue($authenticationState->hasCallbackURI(null));
         $this->assertEquals('http://example.org/admin/foo.php',
-                            $authenticationState->getCallbackURL(null)
+                            $authenticationState->getCallbackURI(null)
                             );
 
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/authenticate.php';
-        $configurations = array('url'       => 'http://example.org/authenticate.php',
+        $configurations = array('uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -422,15 +422,15 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
 
         $authenticationState = &Piece_Unity_Service_Authentication_State::singleton();
 
-        $this->assertTrue($authenticationState->hasCallbackURL(null));
+        $this->assertTrue($authenticationState->hasCallbackURI(null));
         $this->assertEquals('http://example.org/admin/foo.php',
-                            $authenticationState->getCallbackURL(null)
+                            $authenticationState->getCallbackURI(null)
                             );
 
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/authenticate.php';
-        $configurations = array('url'       => 'http://example.org/authenticate.php',
+        $configurations = array('uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -445,15 +445,15 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
 
         $authenticationState = &Piece_Unity_Service_Authentication_State::singleton();
 
-        $this->assertTrue($authenticationState->hasCallbackURL(null));
+        $this->assertTrue($authenticationState->hasCallbackURI(null));
         $this->assertEquals('http://example.org/admin/foo.php',
-                            $authenticationState->getCallbackURL(null)
+                            $authenticationState->getCallbackURI(null)
                             );
 
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/admin/bar.php';
-        $configurations = array('url'       => 'http://example.org/authenticate.php',
+        $configurations = array('uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -466,21 +466,21 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
 
         $authenticationState = &Piece_Unity_Service_Authentication_State::singleton();
 
-        $this->assertFalse($authenticationState->hasCallbackURL(null));
-        $this->assertNull($authenticationState->getCallbackURL(null));
+        $this->assertFalse($authenticationState->hasCallbackURI(null));
+        $this->assertNull($authenticationState->getCallbackURI(null));
     }
 
     /**
      * @since Method available since Release 1.0.0
      */
-    function testCallbackURLShouldBeEncoded()
+    function testCallbackURIShouldBeEncoded()
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
         $_SERVER['PATH_INFO'] = "/\xe5\xa7\x93/\xe4\xb9\x85\xe4\xbf\x9d";
         $_SERVER['QUERY_STRING'] = '%E5%90%8D=%E6%95%A6%E5%95%93';
-        $configurations = array('url'       => 'http://example.org/authenticate.php',
+        $configurations = array('uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -493,21 +493,21 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
 
         $authenticationState = &Piece_Unity_Service_Authentication_State::singleton();
 
-        $this->assertTrue($authenticationState->hasCallbackURL(null));
+        $this->assertTrue($authenticationState->hasCallbackURI(null));
         $this->assertEquals('http://example.org/admin/foo.php/%E5%A7%93/%E4%B9%85%E4%BF%9D?%E5%90%8D=%E6%95%A6%E5%95%93',
-                            $authenticationState->getCallbackURL(null)
+                            $authenticationState->getCallbackURI(null)
                             );
     }
 
     /**
      * @since Method available since Release 1.0.0
      */
-    function testCallbackURLShouldBeKeptIfAuthenticationURLIsRequestedDirectly()
+    function testCallbackURIShouldBeKeptIfAuthenticationURIIsRequestedDirectly()
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
-        $configurations = array('url'       => 'http://example.org/authenticate.php',
+        $configurations = array('uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -520,15 +520,15 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
 
         $authenticationState = &Piece_Unity_Service_Authentication_State::singleton();
 
-        $this->assertTrue($authenticationState->hasCallbackURL(null));
+        $this->assertTrue($authenticationState->hasCallbackURI(null));
         $this->assertEquals('http://example.org/admin/foo.php',
-                            $authenticationState->getCallbackURL(null)
+                            $authenticationState->getCallbackURI(null)
                             );
 
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/authenticate.php';
-        $configurations = array('url'       => 'http://example.org/authenticate.php',
+        $configurations = array('uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -538,15 +538,15 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $interceptor->invoke();
 
         $this->assertEquals('Bar', $this->_context->getView());
-        $this->assertTrue($authenticationState->hasCallbackURL(null));
+        $this->assertTrue($authenticationState->hasCallbackURI(null));
         $this->assertEquals('http://example.org/admin/foo.php',
-                            $authenticationState->getCallbackURL(null)
+                            $authenticationState->getCallbackURI(null)
                             );
 
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/authenticate.php';
-        $configurations = array('url'       => 'http://example.org/authenticate.php',
+        $configurations = array('uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
         $this->_configure($configurations);
@@ -556,9 +556,9 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $interceptor->invoke();
 
         $this->assertEquals('Bar', $this->_context->getView());
-        $this->assertTrue($authenticationState->hasCallbackURL(null));
+        $this->assertTrue($authenticationState->hasCallbackURI(null));
         $this->assertEquals('http://example.org/admin/foo.php',
-                            $authenticationState->getCallbackURL(null)
+                            $authenticationState->getCallbackURI(null)
                             );
     }
 
@@ -571,7 +571,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
         $configurations = array('realm' => 'Foo',
-                                'url' => 'http://example.org/authenticate.php',
+                                'uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/.*')
                                 );
         $this->_configure($configurations);
@@ -592,7 +592,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
         $configurations = array('realm' => 'Foo',
-                                'url' => 'http://example.org/authenticate.php',
+                                'uri' => 'http://example.org/authenticate.php',
                                 'resourcesMatch' => array('^/admin/.*')
                                 );
         $this->_configure($configurations);
@@ -613,7 +613,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
         $configurations = array('realm' => 'Foo',
-                                'url' => 'http://example.org/authenticate.php',
+                                'uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/.*'),
                                 'excludes' => array('^/admin/foo\.php$')
                                 );
@@ -633,7 +633,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/users/authenticate.php';
         $configurations = array('realm'     => 'Foo',
-                                'url'       => 'http://example.org/users/authenticate.php',
+                                'uri'       => 'http://example.org/users/authenticate.php',
                                 'includes' => array('^/.*')
                                 );
         $this->_configure($configurations);
@@ -654,7 +654,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $_SERVER['SERVER_PORT'] = '8201';
         $_SERVER['SCRIPT_NAME'] = '/users/authenticate.php';
         $configurations = array('realm'     => 'Foo',
-                                'url'       => 'http://example.org/foo/users/authenticate.php',
+                                'uri'       => 'http://example.org/foo/users/authenticate.php',
                                 'includes' => array('^/.*')
                                 );
         $this->_configure($configurations);
@@ -679,7 +679,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $_SERVER['SERVER_PORT'] = '8201';
         $_SERVER['SCRIPT_NAME'] = '/users/authenticate.php';
         $configurations = array('realm'     => 'Foo',
-                                'url'       => 'http://example.org/foo/users/authenticate.php',
+                                'uri'       => 'http://example.org/foo/users/authenticate.php',
                                 'includes' => array('^/.*')
                                 );
         $this->_configure($configurations);

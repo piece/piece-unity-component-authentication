@@ -128,10 +128,10 @@ class Piece_Unity_Service_AuthenticationTestCase extends PHPUnit_TestCase
         $this->assertFalse($this->_authentication->isAuthenticated());
     }
 
-    function testRequestShouldBeRedirectedToCallbackURL()
+    function testRequestShouldBeRedirectedToCallbackURI()
     {
         $state = &Piece_Unity_Service_Authentication_State::singleton();
-        $state->setCallbackURL(null, 'http://example.org/path/to/callback.php');
+        $state->setCallbackURI(null, 'http://example.org/path/to/callback.php');
         $config = &new Piece_Unity_Config();
         $context = &Piece_Unity_Context::singleton();
         $context->setConfiguration($config);
@@ -140,18 +140,18 @@ class Piece_Unity_Service_AuthenticationTestCase extends PHPUnit_TestCase
 
         $this->_authentication->login();
 
-        $this->assertTrue($this->_authentication->hasCallbackURL());
+        $this->assertTrue($this->_authentication->hasCallbackURI());
 
-        $this->_authentication->redirectToCallbackURL();
+        $this->_authentication->redirectToCallbackURI();
 
         $this->assertEquals('http://example.org/path/to/callback.php', $context->getView());
         $this->assertTrue($config->getConfiguration('Renderer_Redirection', 'isExternal'));
     }
 
-    function testRequestShouldBeRedirectedToCallbackURLWithSpecifiedRealm()
+    function testRequestShouldBeRedirectedToCallbackURIWithSpecifiedRealm()
     {
         $state = &Piece_Unity_Service_Authentication_State::singleton();
-        $state->setCallbackURL('Foo', 'http://example.org/path/to/callback.php');
+        $state->setCallbackURI('Foo', 'http://example.org/path/to/callback.php');
         $config = &new Piece_Unity_Config();
         $context = &Piece_Unity_Context::singleton();
         $context->setConfiguration($config);
@@ -160,9 +160,9 @@ class Piece_Unity_Service_AuthenticationTestCase extends PHPUnit_TestCase
 
         $this->_authentication->login('Foo');
 
-        $this->assertTrue($this->_authentication->hasCallbackURL('Foo'));
+        $this->assertTrue($this->_authentication->hasCallbackURI('Foo'));
 
-        $this->_authentication->redirectToCallbackURL('Foo');
+        $this->_authentication->redirectToCallbackURI('Foo');
 
         $this->assertEquals('http://example.org/path/to/callback.php', $context->getView());
         $this->assertTrue($config->getConfiguration('Renderer_Redirection', 'isExternal'));

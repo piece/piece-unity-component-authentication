@@ -4,7 +4,7 @@
 /**
  * PHP versions 4 and 5
  *
- * Copyright (c) 2007 KUBO Atsuhiro <iteman@users.sourceforge.net>,
+ * Copyright (c) 2007-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>,
  *               2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>,
  * All rights reserved.
  *
@@ -31,7 +31,7 @@
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Service_Authentication
- * @copyright  2007 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2007-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
  * @copyright  2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    SVN: $Id$
@@ -49,7 +49,7 @@ require_once 'Piece/Unity/Service/Authentication/State.php';
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Service_Authentication
- * @copyright  2007 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2007-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
  * @copyright  2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    Release: @package_version@
@@ -134,30 +134,61 @@ class Piece_Unity_Service_Authentication
     // {{{ redirectToCallbackURL()
 
     /**
-     * Redirects to the callback URL for the given realm.
+     * Redirects to the callback URI for the given realm.
      *
      * @param string $realm
+     * @deprecated Method deprecated in Release 1.1.0
      */
     function redirectToCallbackURL($realm = null)
     {
-        $context = &Piece_Unity_Context::singleton();
-        $context->setView($this->_state->getCallbackURL($realm));
-        $config = &$context->getConfiguration();
-        $config->setConfiguration('Renderer_Redirection', 'isExternal', true);
+        $this->redirectToCallbackURI($realm);
     }
 
     // }}}
     // {{{ hasCallbackURL()
 
     /**
-     * Returns whether the given realm has the callback URL or not.
+     * Returns whether the given realm has the callback URI or not.
      *
      * @param string $realm
      * @return boolean
+     * @deprecated Method deprecated in Release 1.1.0
      */
     function hasCallbackURL($realm = null)
     {
-        return $this->_state->hasCallbackURL($realm);
+        return $this->hasCallbackURI($realm);
+    }
+
+    // }}}
+    // {{{ redirectToCallbackURI()
+
+    /**
+     * Redirects to the callback URI for the given realm.
+     *
+     * @param string $realm
+     * @since Method available since Release 1.1.0
+     */
+    function redirectToCallbackURI($realm = null)
+    {
+        $context = &Piece_Unity_Context::singleton();
+        $context->setView($this->_state->getCallbackURI($realm));
+        $config = &$context->getConfiguration();
+        $config->setConfiguration('Renderer_Redirection', 'isExternal', true);
+    }
+
+    // }}}
+    // {{{ hasCallbackURI()
+
+    /**
+     * Returns whether the given realm has the callback URI or not.
+     *
+     * @param string $realm
+     * @return boolean
+     * @since Method available since Release 1.1.0
+     */
+    function hasCallbackURI($realm = null)
+    {
+        return $this->_state->hasCallbackURI($realm);
     }
 
     /**#@-*/

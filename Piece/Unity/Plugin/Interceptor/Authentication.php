@@ -99,15 +99,15 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
     {
         $this->_prepareAuthenticationState();
 
-        $url = $this->_getConfiguration('url');
-        if (!$url) {
+        $uri = $this->_getConfiguration('uri');
+        if (!$uri) {
             Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                    "The value of the configuration point [ url ] on the plug-in [ {$this->_name} ] is required."
+                                    "The value of the configuration point [ uri ] on the plug-in [ {$this->_name} ] is required."
                                     );
             return;
         }
 
-        if ($this->_isAuthenticationURL($url)) {
+        if ($this->_isAuthenticationURI($uri)) {
             return true;
         }
             
@@ -173,14 +173,14 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
 
         $realm = $this->_getConfiguration('realm');
         if ($this->_authenticationState->isAuthenticated($realm)) {
-            if ($this->_authenticationState->hasCallbackURL($realm)) {
-                $this->_authenticationState->removeCallbackURL($realm);
+            if ($this->_authenticationState->hasCallbackURI($realm)) {
+                $this->_authenticationState->removeCallbackURI($realm);
             }
 
             return true;
         } else {
-            $this->_storeRequestedURL($realm);
-            $this->_context->setView($url);
+            $this->_storeRequestedURI($realm);
+            $this->_context->setView($uri);
 
             return false;
         }
@@ -217,10 +217,13 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
         $this->_addConfigurationPoint('realm');
         $this->_addConfigurationPoint('resourcesMatch', array()); // deprecated
         $this->_addConfigurationPoint('resources', array());      // deprecated
-        $this->_addConfigurationPoint('url');
+        $this->_addConfigurationPoint('url');                     // deprecated
         $this->_addConfigurationPoint('excludes', array());
         $this->_addConfigurationPoint('includes',
                                       $this->_getConfiguration('resourcesMatch')
+                                      );
+        $this->_addConfigurationPoint('uri',
+                                      $this->_getConfiguration('url')
                                       );
 
         $this->_scriptName =
@@ -228,14 +231,14 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
     }
  
     // }}}
-    // {{{ _storeRequestedURL()
+    // {{{ _storeRequestedURI()
 
     /**
-     * Stores the requested URL with the given realm.
+     * Stores the requested URI with the given realm.
      *
      * @param string $realm
      */
-    function _storeRequestedURL($realm)
+    function _storeRequestedURI($realm)
     {
         if (!array_key_exists('QUERY_STRING', $_SERVER)
             || !strlen($_SERVER['QUERY_STRING'])
@@ -263,7 +266,7 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
             $port = ":{$_SERVER['SERVER_PORT']}";
         }
 
-        $this->_authenticationState->setCallbackURL($realm,
+        $this->_authenticationState->setCallbackURI($realm,
                                                     "$protocol://{$_SERVER['SERVER_NAME']}$port" .
                                                     str_replace('//', '/', $_SERVER['SCRIPT_NAME']) .
                                                     "$pathInfo$query"
@@ -298,17 +301,17 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
     }
 
     // }}}
-    // {{{ _isAuthenticationURL()
+    // {{{ _isAuthenticationURI()
 
     /**
      * Checks whether the requested URI is the authentication URI or not.
      *
-     * @param string $authenticationURL
+     * @param string $authenticationURI
      * @return boolean
      */
-    function _isAuthenticationURL($authenticationURL)
+    function _isAuthenticationURI($authenticationURI)
     {
-        $url = &new Net_URL($authenticationURL);
+        $url = &new Net_URL($authenticationURI);
         return $this->_context->removeProxyPath($url->path) == $this->_scriptName;
     }
 
