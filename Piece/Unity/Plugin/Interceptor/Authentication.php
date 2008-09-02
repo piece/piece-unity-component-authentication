@@ -97,8 +97,6 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
      */
     function invoke()
     {
-        $this->_prepareAuthenticationState();
-
         $uri = $this->_getConfiguration('uri');
         if (!$uri) {
             Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
@@ -112,45 +110,51 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
         }
             
         $excludes = $this->_getConfiguration('excludes');
-        if (!is_array($excludes)) {
-            Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                    "The value of the configuration point [ excludes ] on the plug-in [ {$this->_name} ] should be an array."
-                                    );
-            return;
-        }
+        if ($excludes) {
+            if (!is_array($excludes)) {
+                Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
+                                        "The value of the configuration point [ excludes ] on the plug-in [ {$this->_name} ] should be an array."
+                                        );
+                return;
+            }
 
-        foreach ($excludes as $exclude) {
-            if (preg_match("!$exclude!", $this->_scriptName)) {
-                return true;
+            foreach ($excludes as $exclude) {
+                if (preg_match("!$exclude!", $this->_scriptName)) {
+                    return true;
+                }
             }
         }
 
         $isProtectedResource = false;
         $includes = $this->_getConfiguration('includes');
-        if (!is_array($includes)) {
-            Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                    "The value of the configuration point [ includes ] on the plug-in [ {$this->_name} ] should be an array."
-                                    );
-            return;
-        }
+        if ($includes) {
+            if (!is_array($includes)) {
+                Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
+                                        "The value of the configuration point [ includes ] on the plug-in [ {$this->_name} ] should be an array."
+                                        );
+                return;
+            }
 
-        foreach ($includes as $include) {
-            if (preg_match("!$include!", $this->_scriptName)) {
-                $isProtectedResource = true;
-                break;
+            foreach ($includes as $include) {
+                if (preg_match("!$include!", $this->_scriptName)) {
+                    $isProtectedResource = true;
+                    break;
+                }
             }
         }
 
         if (!$isProtectedResource) {
             $resources = $this->_getConfiguration('resources');
-            if (!is_array($resources)) {
-                Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                        "The value of the configuration point [ resources ] on the plug-in [ {$this->_name} ] should be an array."
-                                        );
-                return;
-            }
+            if ($resources) {
+                if (!is_array($resources)) {
+                    Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
+                                            "The value of the configuration point [ resources ] on the plug-in [ {$this->_name} ] should be an array."
+                                            );
+                    return;
+                }
 
-            $isProtectedResource = in_array($this->_scriptName, $resources);
+                $isProtectedResource = in_array($this->_scriptName, $resources);
+            }
         }
 
         $session = &$this->_context->getSession();
@@ -164,6 +168,8 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
         if (!$isProtectedResource) {
             return true;
         }
+
+        $this->_prepareAuthenticationState();
 
         $realm = $this->_getConfiguration('realm');
         if ($this->_authenticationState->isAuthenticated($realm)) {
