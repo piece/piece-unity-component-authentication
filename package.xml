@@ -5,8 +5,8 @@
     http://pear.php.net/dtd/package-2.0.xsd">
  <name>Piece_Unity_Component_Authentication</name>
  <channel>pear.piece-framework.com</channel>
- <summary>An interceptor to control the access to resources which can be accessed only by authenticated users.</summary>
- <description>An interceptor to control the access to resources which can be accessed only by authenticated users.</description>
+ <summary>An interceptor to control the access to resources which can be accessed only by authenticated users</summary>
+ <description>An interceptor to control the access to resources which can be accessed only by authenticated users</description>
  <lead>
   <name>KUBO Atsuhiro</name>
   <user>iteman</user>
@@ -19,8 +19,8 @@
   <email>kumatch@users.sourceforge.net</email>
   <active>yes</active>
  </developer>
- <date>2008-08-21</date>
- <time>20:36:07</time>
+ <date>2008-09-04</date>
+ <time>21:56:40</time>
  <version>
   <release>1.1.0</release>
   <api>1.0.0</api>
@@ -32,7 +32,9 @@
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License (revised)</license>
  <notes>A new release of Piece_Unity_Component_Authentication is now available.
 
-What&apos;s New in Piece_Unity_Component_Authentication 1.1.0</notes>
+What&apos;s New in Piece_Unity_Component_Authentication 1.1.0
+
+ * includes/excludes: Two configuration points &quot;includes&quot; and &quot;excludes&quot; have been added. &quot;includes&quot; allows you to mark multiple URIs as protected resources by regexp. This configuration point behave same as &quot;resourcesMatch&quot;. &quot;excludes&quot; allows you to mark multiple URIs as non-protected resources by regexp. And also the authentication URI has always been excluded from the protected resources.</notes>
  <contents>
   <dir baseinstalldir="/" name="/">
    <dir name="docs">
@@ -115,11 +117,13 @@ What&apos;s New in Piece_Unity_Component_Authentication 1.1.0</notes>
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2008-08-21</date>
+   <date>2008-09-04</date>
    <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License (revised)</license>
    <notes>A new release of Piece_Unity_Component_Authentication is now available.
 
-What&apos;s New in Piece_Unity_Component_Authentication 1.1.0</notes>
+What&apos;s New in Piece_Unity_Component_Authentication 1.1.0
+
+ * includes/excludes: Two configuration points &quot;includes&quot; and &quot;excludes&quot; have been added. &quot;includes&quot; allows you to mark multiple URIs as protected resources by regexp. This configuration point behave same as &quot;resourcesMatch&quot;. &quot;excludes&quot; allows you to mark multiple URIs as non-protected resources by regexp. And also the authentication URI has always been excluded from the protected resources.</notes>
   </release>
   <release>
    <version>

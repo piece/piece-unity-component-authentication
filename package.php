@@ -47,7 +47,9 @@ $apiVersion = '1.0.0';
 $apiStability = 'stable';
 $notes = 'A new release of Piece_Unity_Component_Authentication is now available.
 
-What\'s New in Piece_Unity_Component_Authentication 1.1.0';
+What\'s New in Piece_Unity_Component_Authentication 1.1.0
+
+ * includes/excludes: Two configuration points "includes" and "excludes" have been added. "includes" allows you to mark multiple URIs as protected resources by regexp. This configuration point behave same as "resourcesMatch". "excludes" allows you to mark multiple URIs as non-protected resources by regexp. And also the authentication URI has always been excluded from the protected resources.';
 
 $package = new PEAR_PackageFileManager2();
 $package->setOptions(array('filelistgenerator' => 'file',
@@ -62,8 +64,8 @@ $package->setOptions(array('filelistgenerator' => 'file',
 
 $package->setPackage('Piece_Unity_Component_Authentication');
 $package->setPackageType('php');
-$package->setSummary('An interceptor to control the access to resources which can be accessed only by authenticated users.');
-$package->setDescription('An interceptor to control the access to resources which can be accessed only by authenticated users.');
+$package->setSummary('An interceptor to control the access to resources which can be accessed only by authenticated users');
+$package->setDescription('An interceptor to control the access to resources which can be accessed only by authenticated users');
 $package->setChannel('pear.piece-framework.com');
 $package->setLicense('BSD License (revised)', 'http://www.opensource.org/licenses/bsd-license.php');
 $package->setAPIVersion($apiVersion);
