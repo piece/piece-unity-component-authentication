@@ -669,7 +669,6 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         unset($_SERVER['HTTP_X_FORWARDED_SERVER']);
     }
 
-
     /**
      * @since Method available since Release 1.1.0
      */
@@ -689,6 +688,32 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $interceptor->invoke();
 
         $this->assertEquals('Foo', $this->_context->getView());
+    }
+
+    /**
+     * @since Method available since Release 1.1.1
+     */
+    function testShouldStoreAnAuthenticationStateObjectInASession()
+    {
+        $_SERVER['SERVER_NAME'] = 'example.org';
+        $_SERVER['SERVER_PORT'] = '80';
+        $_SERVER['SCRIPT_NAME'] = '/foo.php';
+        $configurations = array('realm'     => 'Foo',
+                                'uri'       => 'http://example.org/authenticate.php',
+                                'resources' => array('/admin/foo.php', '/admin/bar.php')
+                                );
+        $this->_configure($configurations);
+        $interceptor = &new Piece_Unity_Plugin_Interceptor_Authentication();
+        $interceptor->invoke();
+
+        $this->assertEquals('Foo', $this->_context->getView());
+
+        $session = &$this->_context->getSession();
+
+        $this->assertTrue($session->hasAttribute($GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey']));
+        $this->assertEquals(strtolower('Piece_Unity_Service_Authentication_State'),
+                            strtolower(get_class($session->getAttribute($GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey'])))
+                            );
     }
 
     /**#@-*/

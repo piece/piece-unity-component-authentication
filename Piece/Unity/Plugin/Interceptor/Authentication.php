@@ -97,6 +97,8 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
      */
     function invoke()
     {
+        $this->_prepareAuthenticationState();
+
         $uri = $this->_getConfiguration('uri');
         if (!$uri) {
             Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
@@ -168,8 +170,6 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
         if (!$isProtectedResource) {
             return true;
         }
-
-        $this->_prepareAuthenticationState();
 
         $realm = $this->_getConfiguration('realm');
         if ($this->_authenticationState->isAuthenticated($realm)) {
