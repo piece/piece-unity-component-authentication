@@ -41,15 +41,15 @@ require_once 'PEAR.php';
 
 PEAR::staticPushErrorHandling(PEAR_ERROR_CALLBACK, create_function('$error', 'var_dump($error); exit();'));
 
-$releaseVersion = '1.1.0';
+$releaseVersion = '1.1.1';
 $releaseStability = 'stable';
 $apiVersion = '1.0.0';
 $apiStability = 'stable';
 $notes = 'A new release of Piece_Unity_Component_Authentication is now available.
 
-What\'s New in Piece_Unity_Component_Authentication 1.1.0
+What\'s New in Piece_Unity_Component_Authentication 1.1.1
 
- * includes/excludes: Two configuration points "includes" and "excludes" have been added. "includes" allows you to mark multiple URIs as protected resources by regexp. This configuration point behave same as "resourcesMatch". "excludes" allows you to mark multiple URIs as non-protected resources by regexp. And also the authentication URI has always been excluded from the protected resources.';
+ * A defect fix: A defect that caused a warning "PHP Warning:  call_user_func(Piece_Unity_Plugin_Interceptor_Authentication::loadAuthenticationState)" to be raised until any protected resource was requested has been fixed.';
 
 $package = new PEAR_PackageFileManager2();
 $package->setOptions(array('filelistgenerator' => 'file',
