@@ -4,7 +4,7 @@
 /**
  * PHP versions 4 and 5
  *
- * Copyright (c) 2006-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>,
+ * Copyright (c) 2006-2009 KUBO Atsuhiro <iteman@users.sourceforge.net>,
  *               2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>,
  * All rights reserved.
  *
@@ -31,7 +31,7 @@
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2006-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2006-2009 KUBO Atsuhiro <iteman@users.sourceforge.net>
  * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    SVN: $Id$
@@ -56,7 +56,7 @@ $GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey']
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2006-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2006-2009 KUBO Atsuhiro <iteman@users.sourceforge.net>
  * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    Release: @package_version@
@@ -254,13 +254,13 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
             $pathInfo = str_replace('%2F', '/', rawurlencode($_SERVER['PATH_INFO']));
         }
 
-        if ($_SERVER['SERVER_PORT'] != 443) {
-            $protocol = 'http';
-        } else {
+        if ($this->_context->isSecure()) {
             $protocol = 'https';
+        } else {
+            $protocol = 'http';
         }
 
-        if ($_SERVER['SERVER_PORT'] == 80 || $_SERVER['SERVER_PORT'] == 443) {
+        if ($this->_context->isRunningOnStandardPort()) {
             $port = '';
         } else {
             $port = ":{$_SERVER['SERVER_PORT']}";

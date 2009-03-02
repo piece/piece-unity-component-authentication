@@ -4,7 +4,7 @@
 /**
  * PHP versions 4 and 5
  *
- * Copyright (c) 2006-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>,
+ * Copyright (c) 2006-2009 KUBO Atsuhiro <iteman@users.sourceforge.net>,
  *               2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>,
  * All rights reserved.
  *
@@ -31,7 +31,7 @@
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2006-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2006-2009 KUBO Atsuhiro <iteman@users.sourceforge.net>
  * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    SVN: $Id$
@@ -54,7 +54,7 @@ require_once 'Piece/Unity/Service/Authentication/State.php';
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2006-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2006-2009 KUBO Atsuhiro <iteman@users.sourceforge.net>
  * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    Release: @package_version@
@@ -95,6 +95,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
     {
         Piece_Unity_Service_Authentication_State::clear();
         unset($this->_context);
+        unset($_SERVER['HTTPS']);
         unset($_SERVER['QUERY_STRING']);
         unset($_SERVER['PATH_INFO']);
         unset($_SERVER['REQUEST_METHOD']);
@@ -334,6 +335,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '443';
         $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['HTTPS'] = 'on';
         $configurations = array('uri'       => 'http://example.org/authenticate.php',
                                 'resources' => array('/admin/foo.php', '/admin/bar.php')
                                 );
@@ -376,6 +378,34 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
 
         $this->assertTrue($authenticationState->hasCallbackURI(null));
         $this->assertEquals('http://example.org:8201/admin/foo.php',
+                            $authenticationState->getCallbackURI(null)
+                            );
+    }
+
+    /**
+     * @since Method available since Release 1.2.0
+     */
+    function testRequestedURIShouldBeStoredIfNotAuthenticated4()
+    {
+        $_SERVER['SERVER_NAME'] = 'example.org';
+        $_SERVER['SERVER_PORT'] = '8443';
+        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['HTTPS'] = 'on';
+        $configurations = array('uri'       => 'http://example.org/authenticate.php',
+                                'resources' => array('/admin/foo.php', '/admin/bar.php')
+                                );
+        $this->_configure($configurations);
+        $interceptor = &new Piece_Unity_Plugin_Interceptor_Authentication();
+        $interceptor->invoke();
+
+        $this->assertEquals('http://example.org/authenticate.php',
+                            $this->_context->getView()
+                            );
+
+        $authenticationState = &Piece_Unity_Service_Authentication_State::singleton();
+
+        $this->assertTrue($authenticationState->hasCallbackURI(null));
+        $this->assertEquals('https://example.org:8443/admin/foo.php',
                             $authenticationState->getCallbackURI(null)
                             );
     }
