@@ -383,7 +383,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTestCase extends PHPUnit_Test
     }
 
     /**
-     * @since Method available since Release 1.2.0
+     * @since Method available since Release 1.1.2
      */
     function testRequestedURIShouldBeStoredIfNotAuthenticated4()
     {
