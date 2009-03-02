@@ -4,7 +4,7 @@
 /**
  * PHP versions 4 and 5
  *
- * Copyright (c) 2007-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * Copyright (c) 2007-2008 KUBO Atsuhiro <kubo@iteman.jp>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2007-2008 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2007-2008 KUBO Atsuhiro <kubo@iteman.jp>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    SVN: $Id$
  * @since      File available since Release 0.13.0
@@ -77,7 +77,7 @@ $package->setPhpDep('4.3.0');
 $package->setPearinstallerDep('1.4.3');
 $package->addPackageDepWithChannel('required', 'Piece_Unity', 'pear.piece-framework.com', '1.5.0');
 $package->addPackageDepWithChannel('required', 'Net_URL', 'pear.php.net', '1.0.14');
-$package->addMaintainer('lead', 'iteman', 'KUBO Atsuhiro', 'iteman@users.sourceforge.net');
+$package->addMaintainer('lead', 'iteman', 'KUBO Atsuhiro', 'kubo@iteman.jp');
 $package->addMaintainer('developer', 'kumatch', 'KUMAKURA Yousuke', 'kumatch@users.sourceforge.net');
 $package->addGlobalReplacement('package-info', '@package_version@', 'version');
 $package->generateContents();

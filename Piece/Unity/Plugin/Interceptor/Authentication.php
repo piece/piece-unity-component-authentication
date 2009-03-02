@@ -4,7 +4,7 @@
 /**
  * PHP versions 4 and 5
  *
- * Copyright (c) 2006-2009 KUBO Atsuhiro <iteman@users.sourceforge.net>,
+ * Copyright (c) 2006-2009 KUBO Atsuhiro <kubo@iteman.jp>,
  *               2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>,
  * All rights reserved.
  *
@@ -31,7 +31,7 @@
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2006-2009 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2006-2009 KUBO Atsuhiro <kubo@iteman.jp>
  * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    SVN: $Id$
@@ -56,7 +56,7 @@ $GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey']
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2006-2009 KUBO Atsuhiro <iteman@users.sourceforge.net>
+ * @copyright  2006-2009 KUBO Atsuhiro <kubo@iteman.jp>
  * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    Release: @package_version@
