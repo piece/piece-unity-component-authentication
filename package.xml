@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package packagerversion="1.7.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+<package packagerversion="1.7.2" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
     http://pear.php.net/dtd/tasks-1.0.xsd
     http://pear.php.net/dtd/package-2.0
     http://pear.php.net/dtd/package-2.0.xsd">
@@ -10,7 +10,7 @@
  <lead>
   <name>KUBO Atsuhiro</name>
   <user>iteman</user>
-  <email>iteman@users.sourceforge.net</email>
+  <email>kubo@iteman.jp</email>
   <active>yes</active>
  </lead>
  <developer>
@@ -19,10 +19,10 @@
   <email>kumatch@users.sourceforge.net</email>
   <active>yes</active>
  </developer>
- <date>2008-09-13</date>
- <time>12:05:56</time>
+ <date>2009-03-02</date>
+ <time>16:07:01</time>
  <version>
-  <release>1.1.1</release>
+  <release>1.1.2</release>
   <api>1.0.0</api>
  </version>
  <stability>
@@ -32,9 +32,9 @@
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License (revised)</license>
  <notes>A new release of Piece_Unity_Component_Authentication is now available.
 
-What&apos;s New in Piece_Unity_Component_Authentication 1.1.1
+What&apos;s New in Piece_Unity_Component_Authentication 1.1.2
 
- * A defect fix: A defect that caused a warning &quot;PHP Warning:  call_user_func(Piece_Unity_Plugin_Interceptor_Authentication::loadAuthenticationState)&quot; to be raised until any protected resource was requested has been fixed.</notes>
+ * A defect fix: A defect has been fixed that caused a URI scheme for redirection to be &quot;http&quot; on SSL by non-standard port. (See Ticket #288)</notes>
  <contents>
   <dir baseinstalldir="/" name="/">
    <dir name="docs">
@@ -97,7 +97,7 @@ What&apos;s New in Piece_Unity_Component_Authentication 1.1.1
    <package>
     <name>Piece_Unity</name>
     <channel>pear.piece-framework.com</channel>
-    <min>1.5.0</min>
+    <min>1.7.0</min>
    </package>
    <package>
     <name>Net_URL</name>
@@ -108,6 +108,23 @@ What&apos;s New in Piece_Unity_Component_Authentication 1.1.1
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>1.1.2</release>
+    <api>1.0.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2009-03-02</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License (revised)</license>
+   <notes>A new release of Piece_Unity_Component_Authentication is now available.
+
+What&apos;s New in Piece_Unity_Component_Authentication 1.1.2
+
+ * A defect fix: A defect has been fixed that caused a URI scheme for redirection to be &quot;http&quot; on SSL by non-standard port. (See Ticket #288)</notes>
+  </release>
   <release>
    <version>
     <release>1.1.1</release>

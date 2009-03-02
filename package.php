@@ -4,7 +4,7 @@
 /**
  * PHP versions 4 and 5
  *
- * Copyright (c) 2007-2008 KUBO Atsuhiro <kubo@iteman.jp>
+ * Copyright (c) 2007-2009 KUBO Atsuhiro <iteman@users.sourceforge.net>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2007-2008 KUBO Atsuhiro <kubo@iteman.jp>
+ * @copyright  2007-2009 KUBO Atsuhiro <iteman@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    SVN: $Id$
  * @since      File available since Release 0.13.0
@@ -41,15 +41,15 @@ require_once 'PEAR.php';
 
 PEAR::staticPushErrorHandling(PEAR_ERROR_CALLBACK, create_function('$error', 'var_dump($error); exit();'));
 
-$releaseVersion = '1.1.1';
+$releaseVersion = '1.1.2';
 $releaseStability = 'stable';
 $apiVersion = '1.0.0';
 $apiStability = 'stable';
 $notes = 'A new release of Piece_Unity_Component_Authentication is now available.
 
-What\'s New in Piece_Unity_Component_Authentication 1.1.1
+What\'s New in Piece_Unity_Component_Authentication 1.1.2
 
- * A defect fix: A defect that caused a warning "PHP Warning:  call_user_func(Piece_Unity_Plugin_Interceptor_Authentication::loadAuthenticationState)" to be raised until any protected resource was requested has been fixed.';
+ * A defect fix: A defect has been fixed that caused a URI scheme for redirection to be "http" on SSL by non-standard port. (See Ticket #288)';
 
 $package = new PEAR_PackageFileManager2();
 $package->setOptions(array('filelistgenerator' => 'file',
@@ -58,8 +58,10 @@ $package->setOptions(array('filelistgenerator' => 'file',
                            'baseinstalldir'    => '/',
                            'packagefile'       => 'package.xml',
                            'packagedirectory'  => '.',
-                           'ignore'            => array('package.php')
-                           )
+                           'dir_roles'         => array('docs' => 'doc',
+                                                        'Piece' => 'php',
+                                                        'tests' => 'test'),
+                           'ignore'            => array('package.php'))
                      );
 
 $package->setPackage('Piece_Unity_Component_Authentication');
@@ -75,7 +77,7 @@ $package->setReleaseStability($releaseStability);
 $package->setNotes($notes);
 $package->setPhpDep('4.3.0');
 $package->setPearinstallerDep('1.4.3');
-$package->addPackageDepWithChannel('required', 'Piece_Unity', 'pear.piece-framework.com', '1.5.0');
+$package->addPackageDepWithChannel('required', 'Piece_Unity', 'pear.piece-framework.com', '1.7.0');
 $package->addPackageDepWithChannel('required', 'Net_URL', 'pear.php.net', '1.0.14');
 $package->addMaintainer('lead', 'iteman', 'KUBO Atsuhiro', 'kubo@iteman.jp');
 $package->addMaintainer('developer', 'kumatch', 'KUMAKURA Yousuke', 'kumatch@users.sourceforge.net');
