@@ -4,7 +4,7 @@
 /**
  * PHP versions 4 and 5
  *
- * Copyright (c) 2007-2008 KUBO Atsuhiro <kubo@iteman.jp>,
+ * Copyright (c) 2007-2009 KUBO Atsuhiro <kubo@iteman.jp>,
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  *
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
- * @copyright  2007-2008 KUBO Atsuhiro <kubo@iteman.jp>
+ * @copyright  2007-2009 KUBO Atsuhiro <kubo@iteman.jp>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
  * @version    SVN: $Id$
  * @since      File available since Release 0.13.0
@@ -38,17 +38,10 @@
 
 error_reporting(E_ALL);
 
-if (file_exists(dirname(__FILE__) . '/../../../Piece/Unity.php')) {
-    set_include_path(realpath(dirname(__FILE__) . '/../../..') . PATH_SEPARATOR .
-                     get_include_path()
-                     );
-}
-
-if (file_exists(dirname(__FILE__) . '/../Piece/Unity/Plugin/Interceptor/Authentication.php')) {
-    set_include_path(realpath(dirname(__FILE__) . '/..') . PATH_SEPARATOR .
-                     get_include_path()
-                     );
-}
+set_include_path(realpath(dirname(__FILE__) . '/..') . PATH_SEPARATOR .
+                 realpath(dirname(__FILE__) . '/../../..') . PATH_SEPARATOR .
+                 get_include_path()
+                 );
 
 require_once 'PEAR/ErrorStack.php';
 
