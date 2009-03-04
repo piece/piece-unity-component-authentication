@@ -268,7 +268,7 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
 
         $this->_authenticationState->setCallbackURI($realm,
                                                     "$protocol://{$_SERVER['SERVER_NAME']}$port" .
-                                                    str_replace('//', '/', $_SERVER['SCRIPT_NAME']) .
+                                                    str_replace('//', '/', $_SERVER['REQUEST_URI']) .
                                                     "$pathInfo$query"
                                                     );
     }
