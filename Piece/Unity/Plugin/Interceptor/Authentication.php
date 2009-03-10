@@ -248,10 +248,9 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
             $query = "?{$_SERVER['QUERY_STRING']}";
         }
 
-        if (!array_key_exists('PATH_INFO', $_SERVER)) {
-            $pathInfo = '';
-        } else {
-            $pathInfo = str_replace('%2F', '/', rawurlencode($_SERVER['PATH_INFO']));
+        $pathInfo = Piece_Unity_Request::getPathInfo();
+        if (!is_null($pathInfo)) {
+            $pathInfo = str_replace('%2F', '/', rawurlencode($pathInfo));
         }
 
         if ($this->_context->isSecure()) {
@@ -268,7 +267,7 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
 
         $this->_authenticationState->setCallbackURI($realm,
                                                     "$protocol://{$_SERVER['SERVER_NAME']}$port" .
-                                                    str_replace('//', '/', $_SERVER['REQUEST_URI']) .
+                                                    $this->_context->getOriginalScriptName() .
                                                     "$pathInfo$query"
                                                     );
     }
