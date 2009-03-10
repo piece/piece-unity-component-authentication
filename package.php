@@ -41,15 +41,15 @@ require_once 'PEAR.php';
 
 PEAR::staticPushErrorHandling(PEAR_ERROR_CALLBACK, create_function('$error', 'var_dump($error); exit();'));
 
-$releaseVersion = '1.1.2';
+$releaseVersion = '1.1.3';
 $releaseStability = 'stable';
 $apiVersion = '1.0.0';
 $apiStability = 'stable';
-$notes = 'A new release of Piece_Unity_Component_Authentication is now available.
+$notes = 'A new release of Piece_Unity_Component_Authentication is now available. If you have used Piece_Unity_Component_Authentication 1.1.2, you *must* upgrade to this version.
 
-What\'s New in Piece_Unity_Component_Authentication 1.1.2
+What\'s New in Piece_Unity_Component_Authentication 1.1.3
 
- * A defect fix: A defect has been fixed that caused a URI scheme for redirection to be "http" on SSL by non-standard port. (See Ticket #288)';
+ * A defect fix: - A defect has been fixed that redirection to the requested URI to be failed if the URI contains query variables. (Ticket #291)';
 
 $package = new PEAR_PackageFileManager2();
 $package->setOptions(array('filelistgenerator' => 'file',
@@ -77,7 +77,7 @@ $package->setReleaseStability($releaseStability);
 $package->setNotes($notes);
 $package->setPhpDep('4.3.0');
 $package->setPearinstallerDep('1.4.3');
-$package->addPackageDepWithChannel('required', 'Piece_Unity', 'pear.piece-framework.com', '1.7.0');
+$package->addPackageDepWithChannel('required', 'Piece_Unity', 'pear.piece-framework.com', '1.7.1');
 $package->addPackageDepWithChannel('required', 'Net_URL', 'pear.php.net', '1.0.14');
 $package->addMaintainer('lead', 'iteman', 'KUBO Atsuhiro', 'kubo@iteman.jp');
 $package->addMaintainer('developer', 'kumatch', 'KUMAKURA Yousuke', 'kumatch@users.sourceforge.net');

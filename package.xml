@@ -19,10 +19,10 @@
   <email>kumatch@users.sourceforge.net</email>
   <active>yes</active>
  </developer>
- <date>2009-03-02</date>
- <time>16:07:01</time>
+ <date>2009-03-10</date>
+ <time>18:33:41</time>
  <version>
-  <release>1.1.2</release>
+  <release>1.1.3</release>
   <api>1.0.0</api>
  </version>
  <stability>
@@ -30,11 +30,11 @@
   <api>stable</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License (revised)</license>
- <notes>A new release of Piece_Unity_Component_Authentication is now available.
+ <notes>A new release of Piece_Unity_Component_Authentication is now available. If you have used Piece_Unity_Component_Authentication 1.1.2, you *must* upgrade to this version.
 
-What&apos;s New in Piece_Unity_Component_Authentication 1.1.2
+What&apos;s New in Piece_Unity_Component_Authentication 1.1.3
 
- * A defect fix: A defect has been fixed that caused a URI scheme for redirection to be &quot;http&quot; on SSL by non-standard port. (See Ticket #288)</notes>
+ * A defect fix: - A defect has been fixed that redirection to the requested URI to be failed if the URI contains query variables. (Ticket #291)</notes>
  <contents>
   <dir baseinstalldir="/" name="/">
    <dir name="docs">
@@ -97,7 +97,7 @@ What&apos;s New in Piece_Unity_Component_Authentication 1.1.2
    <package>
     <name>Piece_Unity</name>
     <channel>pear.piece-framework.com</channel>
-    <min>1.7.0</min>
+    <min>1.7.1</min>
    </package>
    <package>
     <name>Net_URL</name>
@@ -108,6 +108,23 @@ What&apos;s New in Piece_Unity_Component_Authentication 1.1.2
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>1.1.3</release>
+    <api>1.0.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2009-03-10</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">BSD License (revised)</license>
+   <notes>A new release of Piece_Unity_Component_Authentication is now available. If you have used Piece_Unity_Component_Authentication 1.1.2, you *must* upgrade to this version.
+
+What&apos;s New in Piece_Unity_Component_Authentication 1.1.3
+
+ * A defect fix: - A defect has been fixed that redirection to the requested URI to be failed if the URI contains query variables. (Ticket #291)</notes>
+  </release>
   <release>
    <version>
     <release>1.1.2</release>
