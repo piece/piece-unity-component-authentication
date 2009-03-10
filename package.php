@@ -49,7 +49,7 @@ $notes = 'A new release of Piece_Unity_Component_Authentication is now available
 
 What\'s New in Piece_Unity_Component_Authentication 1.1.3
 
- * A defect fix: - A defect has been fixed that redirection to the requested URI to be failed if the URI contains query variables. (Ticket #291)';
+ * A defect fix: - A defect has been fixed that redirection to the requested URI to be failed if the URI contains query variables. (Ticket #293)';
 
 $package = new PEAR_PackageFileManager2();
 $package->setOptions(array('filelistgenerator' => 'file',
