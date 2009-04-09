@@ -34,7 +34,7 @@
  * @copyright  2006-2009 KUBO Atsuhiro <kubo@iteman.jp>
  * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
- * @version    GIT: $Id$
+ * @version    GIT: $Id: 8c673022fc9c24fdf537842627ebd6abc2127140 $
  * @since      File available since Release 0.13.0
  */
 
@@ -253,7 +253,7 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
             $pathInfo = str_replace('%2F', '/', rawurlencode($pathInfo));
         }
 
-        if ($this->_context->isSecure()) {
+        if (Stagehand_HTTP_ServerEnv::isSecure()) {
             $protocol = 'https';
         } else {
             $protocol = 'http';
