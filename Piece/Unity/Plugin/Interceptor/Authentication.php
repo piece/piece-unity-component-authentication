@@ -248,7 +248,7 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
             $query = "?{$_SERVER['QUERY_STRING']}";
         }
 
-        $pathInfo = Piece_Unity_Request::getPathInfo();
+        $pathInfo = Stagehand_HTTP_ServerEnv::getPathInfo();
         if (!is_null($pathInfo)) {
             $pathInfo = str_replace('%2F', '/', rawurlencode($pathInfo));
         }
