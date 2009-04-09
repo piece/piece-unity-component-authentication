@@ -254,9 +254,9 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
         }
 
         if (Stagehand_HTTP_ServerEnv::isSecure()) {
-            $protocol = 'https';
+            $scheme = 'https';
         } else {
-            $protocol = 'http';
+            $scheme = 'http';
         }
 
         if (Stagehand_HTTP_ServerEnv::isRunningOnStandardPort()) {
@@ -266,7 +266,7 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
         }
 
         $this->_authenticationState->setCallbackURI($realm,
-                                                    "$protocol://{$_SERVER['SERVER_NAME']}$port" .
+                                                    "$scheme://{$_SERVER['SERVER_NAME']}$port" .
                                                     $this->_context->getOriginalScriptName() .
                                                     "$pathInfo$query"
                                                     );
