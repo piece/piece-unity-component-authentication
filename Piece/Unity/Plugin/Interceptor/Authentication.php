@@ -259,7 +259,7 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
             $protocol = 'http';
         }
 
-        if ($this->_context->isRunningOnStandardPort()) {
+        if (Stagehand_HTTP_ServerEnv::isRunningOnStandardPort()) {
             $port = '';
         } else {
             $port = ":{$_SERVER['SERVER_PORT']}";
