@@ -2,7 +2,7 @@
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
 
 /**
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * Copyright (c) 2007-2009 KUBO Atsuhiro <kubo@iteman.jp>,
  * All rights reserved.
@@ -31,21 +31,24 @@
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
  * @copyright  2007-2009 KUBO Atsuhiro <kubo@iteman.jp>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
- * @version    GIT: $Id$
+ * @license    http://www.opensource.org/licenses/bsd-license.php  New BSD License
+ * @version    Release: @package_version@
  * @since      File available since Release 0.13.0
  */
 
 error_reporting(E_ALL);
 
 set_include_path(realpath(dirname(__FILE__) . '/..') . PATH_SEPARATOR .
-                 realpath(dirname(__FILE__) . '/../../..') . PATH_SEPARATOR .
+                 realpath(dirname(__FILE__) . '/../../../src') . PATH_SEPARATOR .
                  get_include_path()
                  );
 
-require_once 'PEAR/ErrorStack.php';
+require_once 'PHPUnit/Framework.php';
+require_once 'Stagehand/Autoload/PEAR.php';
 
-PEAR_ErrorStack::setDefaultCallback(create_function('$error', 'var_dump($error); return ' . PEAR_ERRORSTACK_DIE . ';'));
+Stagehand_LegacyError_PHPError::enableConversion();
+Stagehand_LegacyError_PEARError::enableConversion();
+Stagehand_LegacyError_PEARErrorStack::enableConversion();
 
 /*
  * Local Variables:
