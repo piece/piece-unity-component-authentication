@@ -2,7 +2,7 @@
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
 
 /**
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * Copyright (c) 2006-2009 KUBO Atsuhiro <kubo@iteman.jp>,
  *               2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>,
@@ -33,21 +33,11 @@
  * @subpackage Piece_Unity_Component_Authentication
  * @copyright  2006-2009 KUBO Atsuhiro <kubo@iteman.jp>
  * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
- * @version    GIT: $Id: 8c673022fc9c24fdf537842627ebd6abc2127140 $
+ * @license    http://www.opensource.org/licenses/bsd-license.php  New BSD License
+ * @version    Release: @package_version@
  * @since      File available since Release 0.13.0
  */
 
-require_once 'Piece/Unity/Plugin/Common.php';
-require_once 'Piece/Unity/Error.php';
-require_once 'Piece/Unity/Service/Authentication/State.php';
-require_once 'Net/URL.php';
-
-// {{{ GLOBALS
-
-$GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey'] = '_authentication';
-
-// }}}
 // {{{ Piece_Unity_Plugin_Interceptor_Authentication
 
 /**
@@ -58,13 +48,18 @@ $GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey']
  * @subpackage Piece_Unity_Component_Authentication
  * @copyright  2006-2009 KUBO Atsuhiro <kubo@iteman.jp>
  * @copyright  2006-2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
+ * @license    http://www.opensource.org/licenses/bsd-license.php  New BSD License
  * @version    Release: @package_version@
  * @since      Class available since Release 0.13.0
  */
-class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_Common
+class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_Common implements Piece_Unity_Plugin_Interceptor_Interface
 {
 
+    // {{{ constants
+
+    const SESSION_KEY = __CLASS__;
+
+    // }}}
     // {{{ properties
 
     /**#@+
@@ -74,11 +69,17 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
     /**#@-*/
 
     /**#@+
+     * @access protected
+     */
+
+    /**#@-*/
+
+    /**#@+
      * @access private
      */
 
-    var $_scriptName;
-    var $_authenticationState;
+    private $_scriptName;
+    private $_authenticationState;
 
     /**#@-*/
 
@@ -87,37 +88,31 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
      */
 
     // }}}
-    // {{{ invoke()
+    // {{{ intercept()
 
     /**
      * Invokes the plugin specific code.
      *
      * @return boolean
-     * @throws PIECE_UNITY_ERROR_INVALID_CONFIGURATION
+     * @throws Piece_Unity_Exception
      */
-    function invoke()
+    public function intercept()
     {
         $this->_prepareAuthenticationState();
 
-        $uri = $this->_getConfiguration('uri');
+        $uri = $this->getConfiguration('uri');
         if (!$uri) {
-            Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                    "The value of the configuration point [ uri ] on the plug-in [ {$this->_name} ] is required."
-                                    );
-            return;
+            throw new Piece_Unity_Exception("The value of the configuration point [ uri ] on the plug-in [ {$this->_name} ] is required");
         }
 
         if ($this->_isAuthenticationURI($uri)) {
             return true;
         }
             
-        $excludes = $this->_getConfiguration('excludes');
+        $excludes = $this->getConfiguration('excludes');
         if ($excludes) {
             if (!is_array($excludes)) {
-                Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                        "The value of the configuration point [ excludes ] on the plug-in [ {$this->_name} ] should be an array."
-                                        );
-                return;
+                throw new Piece_Unity_Exception("The value of the configuration point [ excludes ] on the plug-in [ {$this->_name} ] should be an array");
             }
 
             foreach ($excludes as $exclude) {
@@ -128,13 +123,10 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
         }
 
         $isProtectedResource = false;
-        $includes = $this->_getConfiguration('includes');
+        $includes = $this->getConfiguration('includes');
         if ($includes) {
             if (!is_array($includes)) {
-                Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                        "The value of the configuration point [ includes ] on the plug-in [ {$this->_name} ] should be an array."
-                                        );
-                return;
+                throw new Piece_Unity_Exception("The value of the configuration point [ includes ] on the plug-in [ {$this->_name} ] should be an array");
             }
 
             foreach ($includes as $include) {
@@ -146,20 +138,17 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
         }
 
         if (!$isProtectedResource) {
-            $resources = $this->_getConfiguration('resources');
+            $resources = $this->getConfiguration('resources');
             if ($resources) {
                 if (!is_array($resources)) {
-                    Piece_Unity_Error::push(PIECE_UNITY_ERROR_INVALID_CONFIGURATION,
-                                            "The value of the configuration point [ resources ] on the plug-in [ {$this->_name} ] should be an array."
-                                            );
-                    return;
+                    throw new Piece_Unity_Exception("The value of the configuration point [ resources ] on the plug-in [ {$this->_name} ] should be an array");
                 }
 
                 $isProtectedResource = in_array($this->_scriptName, $resources);
             }
         }
 
-        $session = &$this->_context->getSession();
+        $session = $this->context->getSession();
         $session->setPreloadCallback('_Interceptor_Authentication_StateLoader',
                                      array(__CLASS__, 'loadAuthenticationState')
                                      );
@@ -171,7 +160,7 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
             return true;
         }
 
-        $realm = $this->_getConfiguration('realm');
+        $realm = $this->getConfiguration('realm');
         if ($this->_authenticationState->isAuthenticated($realm)) {
             if ($this->_authenticationState->hasCallbackURI($realm)) {
                 $this->_authenticationState->removeCallbackURI($realm);
@@ -180,7 +169,7 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
             return true;
         } else {
             $this->_storeRequestedURI($realm);
-            $this->_context->setView($uri);
+            $this->context->setView($uri);
 
             return false;
         }
@@ -190,14 +179,42 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
     // {{{ loadAuthenticationState()
 
     /**
-     * Loads Piece_Unity_Service_Authentication_State for preventing that
-     * the instance become an incomplete class.
-     *
-     * @static
+     * Loads Piece_Unity_Service_Authentication_State for preventing that the instance
+     * become an incomplete class.
      */
-    function loadAuthenticationState()
+    public static function loadAuthenticationState()
     {
         include_once 'Piece/Unity/Service/Authentication/State.php';
+    }
+
+    /**#@-*/
+
+    /**#@+
+     * @access protected
+     */
+
+    // }}}
+    // {{{ initialize()
+
+    /**
+     * Defines and initializes extension points and configuration points.
+     */
+    protected function initialize()
+    {
+        $this->addConfigurationPoint('realm');
+        $this->addConfigurationPoint('resourcesMatch', array()); // deprecated
+        $this->addConfigurationPoint('resources', array());      // deprecated
+        $this->addConfigurationPoint('url');                     // deprecated
+        $this->addConfigurationPoint('excludes', array());
+        $this->addConfigurationPoint('includes',
+                                     $this->getConfiguration('resourcesMatch')
+                                     );
+        $this->addConfigurationPoint('uri',
+                                     $this->getConfiguration('url')
+                                     );
+
+        $this->_scriptName =
+            $this->context->removeProxyPath($this->context->getScriptName());
     }
 
     /**#@-*/
@@ -207,30 +224,6 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
      */
 
     // }}}
-    // {{{ _initialize()
-
-    /**
-     * Defines and initializes extension points and configuration points.
-     */
-    function _initialize()
-    {
-        $this->_addConfigurationPoint('realm');
-        $this->_addConfigurationPoint('resourcesMatch', array()); // deprecated
-        $this->_addConfigurationPoint('resources', array());      // deprecated
-        $this->_addConfigurationPoint('url');                     // deprecated
-        $this->_addConfigurationPoint('excludes', array());
-        $this->_addConfigurationPoint('includes',
-                                      $this->_getConfiguration('resourcesMatch')
-                                      );
-        $this->_addConfigurationPoint('uri',
-                                      $this->_getConfiguration('url')
-                                      );
-
-        $this->_scriptName =
-            $this->_context->removeProxyPath($this->_context->getScriptName());
-    }
- 
-    // }}}
     // {{{ _storeRequestedURI()
 
     /**
@@ -238,7 +231,7 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
      *
      * @param string $realm
      */
-    function _storeRequestedURI($realm)
+    private function _storeRequestedURI($realm)
     {
         if (!array_key_exists('QUERY_STRING', $_SERVER)
             || !strlen($_SERVER['QUERY_STRING'])
@@ -267,7 +260,7 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
 
         $this->_authenticationState->setCallbackURI($realm,
                                                     "$scheme://{$_SERVER['SERVER_NAME']}$port" .
-                                                    $this->_context->getOriginalScriptName() .
+                                                    $this->context->getOriginalScriptName() .
                                                     "$pathInfo$query"
                                                     );
     }
@@ -278,14 +271,14 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
     /**
      * Sets the Piece_Unity_Service_Authentication_State object to the session.
      */
-    function _prepareAuthenticationState()
+    private function _prepareAuthenticationState()
     {
-        $session = &$this->_context->getSession();
-        $authenticationState = &$session->getAttribute($GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey']);
+        $session = $this->context->getSession();
+        $authenticationState = $session->getAttribute(self::SESSION_KEY);
         if (is_null($authenticationState)) {
             $authenticationState =
-                &Piece_Unity_Service_Authentication_State::singleton();
-            $session->setAttributeByRef($GLOBALS['PIECE_UNITY_Interceptor_Authentication_AuthenticationStateSessionKey'], $authenticationState);
+                Piece_Unity_Service_Authentication_State::singleton();
+            $session->setAttributeByRef(self::SESSION_KEY, $authenticationState);
             $session->setPreloadCallback('_Interceptor_Authentication',
                                          array('Piece_Unity_Plugin_Factory', 'factory')
                                          );
@@ -296,7 +289,7 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
             Piece_Unity_Service_Authentication_State::setInstance($authenticationState);
         }
 
-        $this->_authenticationState = &$authenticationState;
+        $this->_authenticationState = $authenticationState;
     }
 
     // }}}
@@ -308,10 +301,10 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
      * @param string $authenticationURI
      * @return boolean
      */
-    function _isAuthenticationURI($authenticationURI)
+    private function _isAuthenticationURI($authenticationURI)
     {
-        $url = &new Net_URL($authenticationURI);
-        return $this->_context->removeProxyPath($url->path) == $this->_scriptName;
+        $url = new Net_URL($authenticationURI);
+        return $this->context->removeProxyPath($url->path) == $this->_scriptName;
     }
 
     /**#@-*/
