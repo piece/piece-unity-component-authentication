@@ -285,8 +285,8 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
      */
     private function _isAuthenticationURI($authenticationURI)
     {
-        $url = new Net_URL($authenticationURI);
-        return $this->context->removeProxyPath($url->path) == $this->_scriptName;
+        $url = new Net_URL2($authenticationURI);
+        return $this->context->removeProxyPath($url->getPath()) == $this->_scriptName;
     }
 
     /**#@-*/
