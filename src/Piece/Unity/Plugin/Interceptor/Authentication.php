@@ -137,17 +137,6 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
             }
         }
 
-        if (!$isProtectedResource) {
-            $resources = $this->getConfiguration('resources');
-            if ($resources) {
-                if (!is_array($resources)) {
-                    throw new Piece_Unity_Exception("The value of the configuration point [ resources ] on the plug-in [ {$this->_name} ] should be an array");
-                }
-
-                $isProtectedResource = in_array($this->_scriptName, $resources);
-            }
-        }
-
         $session = $this->context->getSession();
         $session->setPreloadCallback('_Interceptor_Authentication_StateLoader',
                                      array(__CLASS__, 'loadAuthenticationState')
@@ -202,16 +191,9 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
     protected function initialize()
     {
         $this->addConfigurationPoint('realm');
-        $this->addConfigurationPoint('resourcesMatch', array()); // deprecated
-        $this->addConfigurationPoint('resources', array());      // deprecated
-        $this->addConfigurationPoint('url');                     // deprecated
         $this->addConfigurationPoint('excludes', array());
-        $this->addConfigurationPoint('includes',
-                                     $this->getConfiguration('resourcesMatch')
-                                     );
-        $this->addConfigurationPoint('uri',
-                                     $this->getConfiguration('url')
-                                     );
+        $this->addConfigurationPoint('includes', array());
+        $this->addConfigurationPoint('uri');
 
         $this->_scriptName =
             $this->context->removeProxyPath($this->context->getScriptName());
