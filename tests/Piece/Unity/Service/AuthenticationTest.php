@@ -2,7 +2,7 @@
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
 
 /**
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * Copyright (c) 2007-2009 KUBO Atsuhiro <kubo@iteman.jp>,
  *               2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>,
@@ -33,19 +33,12 @@
  * @subpackage Piece_Unity_Component_Authentication
  * @copyright  2007-2009 KUBO Atsuhiro <kubo@iteman.jp>
  * @copyright  2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
- * @version    GIT: $Id$
+ * @license    http://www.opensource.org/licenses/bsd-license.php  New BSD License
+ * @version    Release: @package_version@
  * @since      File available since Release 1.0.0
  */
 
-require_once realpath(dirname(__FILE__) . '/../../../prepare.php');
-require_once 'PHPUnit.php';
-require_once 'Piece/Unity/Service/Authentication.php';
-require_once 'Piece/Unity/Config.php';
-require_once 'Piece/Unity/Context.php';
-require_once 'Piece/Unity/Service/Authentication/State.php';
-
-// {{{ Piece_Unity_Service_AuthenticationTestCase
+// {{{ Piece_Unity_Service_AuthenticationTest
 
 /**
  * Some tests for Piece_Unity_Service_Authentication.
@@ -54,11 +47,11 @@ require_once 'Piece/Unity/Service/Authentication/State.php';
  * @subpackage Piece_Unity_Component_Authentication
  * @copyright  2007-2009 KUBO Atsuhiro <kubo@iteman.jp>
  * @copyright  2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
+ * @license    http://www.opensource.org/licenses/bsd-license.php  New BSD License
  * @version    Release: @package_version@
  * @since      Class available since Release 1.0.0
  */
-class Piece_Unity_Service_AuthenticationTestCase extends PHPUnit_TestCase
+class Piece_Unity_Service_AuthenticationTest extends PHPUnit_Framework_TestCase
 {
 
     // {{{ properties
@@ -70,10 +63,16 @@ class Piece_Unity_Service_AuthenticationTestCase extends PHPUnit_TestCase
     /**#@-*/
 
     /**#@+
+     * @access protected
+     */
+
+    /**#@-*/
+
+    /**#@+
      * @access private
      */
 
-    var $_authentication;
+    private $_authentication;
 
     /**#@-*/
 
@@ -81,19 +80,18 @@ class Piece_Unity_Service_AuthenticationTestCase extends PHPUnit_TestCase
      * @access public
      */
 
-    function setUp()
+    public function setUp()
     {
-        $this->_authentication = &new Piece_Unity_Service_Authentication();
-        $this->_authentication->logout('Foo');
-    }
-
-    function tearDown()
-    {
-        Piece_Unity_Service_Authentication_State::clear();
         Piece_Unity_Context::clear();
+        Piece_Unity_Service_Authentication_State::clear();
+        $this->_authentication = new Piece_Unity_Service_Authentication();
+        $this->_authentication->logout('Foo');
     }
 
-    function testUserShouldBeMarkedAsAuthenticatedByLogin()
+    /**
+     * @test
+     */
+    public function markTheUserAsAuthenticatedByLogin()
     {
         $this->assertFalse($this->_authentication->isAuthenticated('Foo'));
 
@@ -102,7 +100,10 @@ class Piece_Unity_Service_AuthenticationTestCase extends PHPUnit_TestCase
         $this->assertTrue($this->_authentication->isAuthenticated('Foo'));
     }
 
-    function testUserShouldBeMarkedAsNotAuthenticatedByLogout()
+    /**
+     * @test
+     */
+    public function markTheUserAsNotAuthenticatedByLogout()
     {
         $this->assertFalse($this->_authentication->isAuthenticated('Foo'));
 
@@ -115,7 +116,10 @@ class Piece_Unity_Service_AuthenticationTestCase extends PHPUnit_TestCase
         $this->assertFalse($this->_authentication->isAuthenticated('Foo'));
     }
 
-    function testDefaultRealmShouldBeUsedIfRealmIsNotGiven()
+    /**
+     * @test
+     */
+    public function useTheDefaultRealmIfTheRealmIsNotGiven()
     {
         $this->assertFalse($this->_authentication->isAuthenticated());
 
@@ -128,12 +132,14 @@ class Piece_Unity_Service_AuthenticationTestCase extends PHPUnit_TestCase
         $this->assertFalse($this->_authentication->isAuthenticated());
     }
 
-    function testRequestShouldBeRedirectedToCallbackURI()
+    /**
+     * @test
+     */
+    public function redirectTheRequestToTheCallbackUri()
     {
-        $state = &Piece_Unity_Service_Authentication_State::singleton();
-        $state->setCallbackURI(null, 'http://example.org/path/to/callback.php');
-        $config = &new Piece_Unity_Config();
-        $context = &Piece_Unity_Context::singleton();
+        Piece_Unity_Service_Authentication_State::singleton()->setCallbackURI(null, 'http://example.org/path/to/callback.php');
+        $config = new Piece_Unity_Config();
+        $context = Piece_Unity_Context::singleton();
         $context->setConfiguration($config);
 
         $this->assertFalse($this->_authentication->isAuthenticated());
@@ -148,12 +154,14 @@ class Piece_Unity_Service_AuthenticationTestCase extends PHPUnit_TestCase
         $this->assertTrue($config->getConfiguration('Renderer_Redirection', 'isExternal'));
     }
 
-    function testRequestShouldBeRedirectedToCallbackURIWithSpecifiedRealm()
+    /**
+     * @test
+     */
+    public function redirectTheRequestToTheCallbackUriOfTheGivenRealm()
     {
-        $state = &Piece_Unity_Service_Authentication_State::singleton();
-        $state->setCallbackURI('Foo', 'http://example.org/path/to/callback.php');
-        $config = &new Piece_Unity_Config();
-        $context = &Piece_Unity_Context::singleton();
+        Piece_Unity_Service_Authentication_State::singleton()->setCallbackURI('Foo', 'http://example.org/path/to/callback.php');
+        $config = new Piece_Unity_Config();
+        $context = Piece_Unity_Context::singleton();
         $context->setConfiguration($config);
 
         $this->assertFalse($this->_authentication->isAuthenticated('Foo'));
@@ -167,6 +175,12 @@ class Piece_Unity_Service_AuthenticationTestCase extends PHPUnit_TestCase
         $this->assertEquals('http://example.org/path/to/callback.php', $context->getView());
         $this->assertTrue($config->getConfiguration('Renderer_Redirection', 'isExternal'));
     }
+
+    /**#@-*/
+
+    /**#@+
+     * @access protected
+     */
 
     /**#@-*/
 

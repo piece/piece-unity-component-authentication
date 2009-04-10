@@ -2,7 +2,7 @@
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
 
 /**
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * Copyright (c) 2007-2009 KUBO Atsuhiro <kubo@iteman.jp>,
  *               2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>,
@@ -33,13 +33,10 @@
  * @subpackage Piece_Unity_Service_Authentication
  * @copyright  2007-2009 KUBO Atsuhiro <kubo@iteman.jp>
  * @copyright  2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
- * @version    GIT: $Id$
+ * @license    http://www.opensource.org/licenses/bsd-license.php  New BSD License
+ * @version    Release: @package_version@
  * @since      File available since Release 1.0.0
  */
-
-require_once 'Piece/Unity/Context.php';
-require_once 'Piece/Unity/Service/Authentication/State.php';
 
 // {{{ Piece_Unity_Service_Authentication
 
@@ -51,7 +48,7 @@ require_once 'Piece/Unity/Service/Authentication/State.php';
  * @subpackage Piece_Unity_Service_Authentication
  * @copyright  2007-2009 KUBO Atsuhiro <kubo@iteman.jp>
  * @copyright  2007 KUMAKURA Yousuke <kumatch@users.sourceforge.net>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
+ * @license    http://www.opensource.org/licenses/bsd-license.php  New BSD License
  * @version    Release: @package_version@
  * @since      Class available since Release 1.0.0
  */
@@ -67,10 +64,16 @@ class Piece_Unity_Service_Authentication
     /**#@-*/
 
     /**#@+
+     * @access protected
+     */
+
+    /**#@-*/
+
+    /**#@+
      * @access private
      */
 
-    var $_state;
+    private $_state;
 
     /**#@-*/
 
@@ -79,15 +82,15 @@ class Piece_Unity_Service_Authentication
      */
 
     // }}}
-    // {{{ constructor
+    // {{{ __construct()
 
     /**
-     * Sets a single instance of
-     * Piece_Unity_Service_Authentication_State to the property.
+     * Sets a single instance of Piece_Unity_Service_Authentication_State to
+     * the property.
      */
-    function Piece_Unity_Service_Authentication()
+    public function __construct()
     {
-        $this->_state = &Piece_Unity_Service_Authentication_State::singleton();
+        $this->_state = Piece_Unity_Service_Authentication_State::singleton();
     }
 
     // }}}
@@ -98,7 +101,7 @@ class Piece_Unity_Service_Authentication
      *
      * @param string $realm
      */
-    function login($realm = null)
+    public function login($realm = null)
     {
         $this->_state->setIsAuthenticated($realm, true);
     }
@@ -111,7 +114,7 @@ class Piece_Unity_Service_Authentication
      *
      * @param string $realm
      */
-    function logout($realm = null)
+    public function logout($realm = null)
     {
         $this->_state->setIsAuthenticated($realm, false);
     }
@@ -125,7 +128,7 @@ class Piece_Unity_Service_Authentication
      * @param string $realm
      * @return boolean
      */
-    function isAuthenticated($realm = null)
+    public function isAuthenticated($realm = null)
     {
         return $this->_state->isAuthenticated($realm);
     }
@@ -139,7 +142,7 @@ class Piece_Unity_Service_Authentication
      * @param string $realm
      * @deprecated Method deprecated in Release 1.1.0
      */
-    function redirectToCallbackURL($realm = null)
+    public function redirectToCallbackURL($realm = null)
     {
         $this->redirectToCallbackURI($realm);
     }
@@ -154,7 +157,7 @@ class Piece_Unity_Service_Authentication
      * @return boolean
      * @deprecated Method deprecated in Release 1.1.0
      */
-    function hasCallbackURL($realm = null)
+    public function hasCallbackURL($realm = null)
     {
         return $this->hasCallbackURI($realm);
     }
@@ -168,12 +171,12 @@ class Piece_Unity_Service_Authentication
      * @param string $realm
      * @since Method available since Release 1.1.0
      */
-    function redirectToCallbackURI($realm = null)
+    public function redirectToCallbackURI($realm = null)
     {
-        $context = &Piece_Unity_Context::singleton();
+        $context = Piece_Unity_Context::singleton();
         $context->setView($this->_state->getCallbackURI($realm));
-        $config = &$context->getConfiguration();
-        $config->setConfiguration('Renderer_Redirection', 'isExternal', true);
+        $context->getConfiguration()
+                ->setConfiguration('Renderer_Redirection', 'isExternal', true);
     }
 
     // }}}
@@ -186,10 +189,16 @@ class Piece_Unity_Service_Authentication
      * @return boolean
      * @since Method available since Release 1.1.0
      */
-    function hasCallbackURI($realm = null)
+    public function hasCallbackURI($realm = null)
     {
         return $this->_state->hasCallbackURI($realm);
     }
+
+    /**#@-*/
+
+    /**#@+
+     * @access protected
+     */
 
     /**#@-*/
 

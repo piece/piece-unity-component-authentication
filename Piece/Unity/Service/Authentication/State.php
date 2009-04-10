@@ -2,7 +2,7 @@
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
 
 /**
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * Copyright (c) 2007-2009 KUBO Atsuhiro <kubo@iteman.jp>,
  * All rights reserved.
@@ -31,17 +31,11 @@
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
  * @copyright  2007-2009 KUBO Atsuhiro <kubo@iteman.jp>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
- * @version    GIT: $Id$
+ * @license    http://www.opensource.org/licenses/bsd-license.php  New BSD License
+ * @version    Release: @package_version@
  * @since      File available since Release 1.0.0
  */
 
-// {{{ GLOBALS
-
-$GLOBALS['PIECE_UNITY_Service_Authentication_State_Instance'] = null;
-$GLOBALS['PIECE_UNITY_Service_Authentication_State_DefaultRealm'] = '_default';
-
-// }}}
 // {{{ Piece_Unity_Service_Authentication_State
 
 /**
@@ -50,13 +44,18 @@ $GLOBALS['PIECE_UNITY_Service_Authentication_State_DefaultRealm'] = '_default';
  * @package    Piece_Unity
  * @subpackage Piece_Unity_Component_Authentication
  * @copyright  2007-2009 KUBO Atsuhiro <kubo@iteman.jp>
- * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License (revised)
+ * @license    http://www.opensource.org/licenses/bsd-license.php  New BSD License
  * @version    Release: @package_version@
  * @since      Class available since Release 1.0.0
  */
 class Piece_Unity_Service_Authentication_State
 {
 
+    // {{{ constants
+
+    const REALM_DEFALT = __CLASS__;
+
+    // }}}
     // {{{ properties
 
     /**#@+
@@ -66,10 +65,17 @@ class Piece_Unity_Service_Authentication_State
     /**#@-*/
 
     /**#@+
+     * @access protected
+     */
+
+    /**#@-*/
+
+    /**#@+
      * @access private
      */
 
-    var $_statesByRealm = array();
+    private $_statesByRealm = array();
+    private static $_soleInstance;
 
     /**#@-*/
 
@@ -86,15 +92,14 @@ class Piece_Unity_Service_Authentication_State
      * be created and returned.
      *
      * @return Piece_Unity_Service_Authentication_State
-     * @static
      */
-    function &singleton()
+    public function singleton()
     {
-        if (is_null($GLOBALS['PIECE_UNITY_Service_Authentication_State_Instance'])) {
-            $GLOBALS['PIECE_UNITY_Service_Authentication_State_Instance'] = &new Piece_Unity_Service_Authentication_State();
+        if (is_null(self::$_soleInstance)) {
+            self::$_soleInstance = new self();
         }
 
-        return $GLOBALS['PIECE_UNITY_Service_Authentication_State_Instance'];
+        return self::$_soleInstance;
     }
 
     // }}}
@@ -106,7 +111,7 @@ class Piece_Unity_Service_Authentication_State
      * @param string  $realm
      * @param boolean $isAuthenticated
      */
-    function setIsAuthenticated($realm, $isAuthenticated)
+    public function setIsAuthenticated($realm, $isAuthenticated)
     {
         $this->_statesByRealm[ $this->_getRealm($realm) ]['isAuthenticated'] = $isAuthenticated;
     }
@@ -120,7 +125,7 @@ class Piece_Unity_Service_Authentication_State
      * @param string $realm
      * @return boolean
      */
-    function isAuthenticated($realm)
+    public function isAuthenticated($realm)
     {
         $realm = $this->_getRealm($realm);
         if (!array_key_exists($realm, $this->_statesByRealm)) {
@@ -144,7 +149,7 @@ class Piece_Unity_Service_Authentication_State
      * @param string $callbackURI
      * @deprecated Method deprecated in Release 1.1.0
      */
-    function setCallbackURL($realm, $callbackURI)
+    public function setCallbackURL($realm, $callbackURI)
     {
         $this->setCallbackURI($realm, $callbackURI);
     }
@@ -159,7 +164,7 @@ class Piece_Unity_Service_Authentication_State
      * @return string
      * @deprecated Method deprecated in Release 1.1.0
      */
-    function getCallbackURL($realm)
+    public function getCallbackURL($realm)
     {
         return $this->getCallbackURI($realm);
     }
@@ -173,7 +178,7 @@ class Piece_Unity_Service_Authentication_State
      * @param string $realm
      * @deprecated Method deprecated in Release 1.1.0
      */
-    function removeCallbackURL($realm)
+    public function removeCallbackURL($realm)
     {
         $this->removeCallbackURI($realm);
     }
@@ -185,11 +190,11 @@ class Piece_Unity_Service_Authentication_State
      * Sets a Piece_Unity_Service_Authentication_State object as a single
      * instance.
      *
-     * @param Piece_Unity_Service_Authentication_State &$instance
+     * @param Piece_Unity_Service_Authentication_State $instance
      */
-    function setInstance(&$instance)
+    public function setInstance($instance)
     {
-        $GLOBALS['PIECE_UNITY_Service_Authentication_State_Instance'] = &$instance;
+        self::$_soleInstance = $instance;
     }
 
     // }}}
@@ -202,7 +207,7 @@ class Piece_Unity_Service_Authentication_State
      * @return boolean
      * @deprecated Method deprecated in Release 1.1.0
      */
-    function hasCallbackURL($realm)
+    public function hasCallbackURL($realm)
     {
         return $this->hasCallbackURI($realm);
     }
@@ -212,12 +217,10 @@ class Piece_Unity_Service_Authentication_State
 
     /**
      * Removed a single instance safely.
-     *
-     * @static
      */
-    function clear()
+    public static function clear()
     {
-        $GLOBALS['PIECE_UNITY_Service_Authentication_State_Instance'] = null;
+        self::$_soleInstance = null;
     }
 
     // }}}
@@ -230,7 +233,7 @@ class Piece_Unity_Service_Authentication_State
      * @param string $callbackURI
      * @since Method available since Release 1.1.0
      */
-    function setCallbackURI($realm, $callbackURI)
+    public function setCallbackURI($realm, $callbackURI)
     {
         $this->_statesByRealm[ $this->_getRealm($realm) ]['callbackURI'] = $callbackURI;
     }
@@ -245,7 +248,7 @@ class Piece_Unity_Service_Authentication_State
      * @return string
      * @since Method available since Release 1.1.0
      */
-    function getCallbackURI($realm)
+    public function getCallbackURI($realm)
     {
         return @$this->_statesByRealm[ $this->_getRealm($realm) ]['callbackURI'];
     }
@@ -259,7 +262,7 @@ class Piece_Unity_Service_Authentication_State
      * @param string $realm
      * @since Method available since Release 1.1.0
      */
-    function removeCallbackURI($realm)
+    public function removeCallbackURI($realm)
     {
         unset($this->_statesByRealm[ $this->_getRealm($realm) ]['callbackURI']);
     }
@@ -274,7 +277,7 @@ class Piece_Unity_Service_Authentication_State
      * @return boolean
      * @since Method available since Release 1.1.0
      */
-    function hasCallbackURI($realm)
+    public function hasCallbackURI($realm)
     {
         $realm = $this->_getRealm($realm);
         if (!array_key_exists($realm, $this->_statesByRealm)) {
@@ -287,8 +290,21 @@ class Piece_Unity_Service_Authentication_State
     /**#@-*/
 
     /**#@+
+     * @access protected
+     */
+
+    /**#@-*/
+
+    /**#@+
      * @access private
      */
+
+    // }}}
+    // {{{ __construct()
+
+    /**
+     */
+    private function __construct() {}
 
     // }}}
     // {{{ _getRealm()
@@ -299,10 +315,10 @@ class Piece_Unity_Service_Authentication_State
      * @param string $realm
      * @return string
      */
-    function _getRealm($realm)
+    private function _getRealm($realm)
     {
         if (is_null($realm)) {
-            return $GLOBALS['PIECE_UNITY_Service_Authentication_State_DefaultRealm'];
+            return self::REALM_DEFALT;
         }
 
         return $realm;
