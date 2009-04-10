@@ -58,8 +58,8 @@ $package->setOptions(array('filelistgenerator' => 'file',
                            'baseinstalldir'    => '/',
                            'packagefile'       => 'package.xml',
                            'packagedirectory'  => '.',
-                           'dir_roles'         => array('docs' => 'doc',
-                                                        'Piece' => 'php',
+                           'dir_roles'         => array('doc' => 'doc',
+                                                        'src' => 'php',
                                                         'tests' => 'test'),
                            'ignore'            => array('package.php'))
                      );
