@@ -157,7 +157,10 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
 
             return true;
         } else {
-            $this->_storeRequestedURI($realm);
+            $this->_authenticationState->setCallbackURI(
+                $realm,
+                Stagehand_HTTP_ServerEnv::getRequestURI()
+                                                        );
             $this->context->setView($uri);
 
             return false;
@@ -204,48 +207,6 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
     /**#@+
      * @access private
      */
-
-    // }}}
-    // {{{ _storeRequestedURI()
-
-    /**
-     * Stores the requested URI with the given realm.
-     *
-     * @param string $realm
-     */
-    private function _storeRequestedURI($realm)
-    {
-        if (!array_key_exists('QUERY_STRING', $_SERVER)
-            || !strlen($_SERVER['QUERY_STRING'])
-            ) {
-            $query = '';
-        } else {
-            $query = "?{$_SERVER['QUERY_STRING']}";
-        }
-
-        $pathInfo = Stagehand_HTTP_ServerEnv::getPathInfo();
-        if (!is_null($pathInfo)) {
-            $pathInfo = str_replace('%2F', '/', rawurlencode($pathInfo));
-        }
-
-        if (Stagehand_HTTP_ServerEnv::isSecure()) {
-            $scheme = 'https';
-        } else {
-            $scheme = 'http';
-        }
-
-        if (Stagehand_HTTP_ServerEnv::isRunningOnStandardPort()) {
-            $port = '';
-        } else {
-            $port = ":{$_SERVER['SERVER_PORT']}";
-        }
-
-        $this->_authenticationState->setCallbackURI($realm,
-                                                    "$scheme://{$_SERVER['SERVER_NAME']}$port" .
-                                                    $this->context->getOriginalScriptName() .
-                                                    "$pathInfo$query"
-                                                    );
-    }
 
     // }}}
     // {{{ _prepareAuthenticationState()
