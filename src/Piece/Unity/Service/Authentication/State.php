@@ -140,50 +140,6 @@ class Piece_Unity_Service_Authentication_State
     }
 
     // }}}
-    // {{{ setCallbackURL()
-
-    /**
-     * Sets the callback URI to the given realm.
-     *
-     * @param string $realm
-     * @param string $callbackURI
-     * @deprecated Method deprecated in Release 1.1.0
-     */
-    public function setCallbackURL($realm, $callbackURI)
-    {
-        $this->setCallbackURI($realm, $callbackURI);
-    }
-
-    // }}}
-    // {{{ getCallbackURL()
-
-    /**
-     * Gets the callback URI for the given realm.
-     *
-     * @param string $realm
-     * @return string
-     * @deprecated Method deprecated in Release 1.1.0
-     */
-    public function getCallbackURL($realm)
-    {
-        return $this->getCallbackURI($realm);
-    }
-
-    // }}}
-    // {{{ removeCallbackURL()
-
-    /**
-     * Removes the callback URI for the given realm.
-     *
-     * @param string $realm
-     * @deprecated Method deprecated in Release 1.1.0
-     */
-    public function removeCallbackURL($realm)
-    {
-        $this->removeCallbackURI($realm);
-    }
-
-    // }}}
     // {{{ setInstance()
 
     /**
@@ -195,21 +151,6 @@ class Piece_Unity_Service_Authentication_State
     public function setInstance($instance)
     {
         self::$_soleInstance = $instance;
-    }
-
-    // }}}
-    // {{{ hasCallbackURL()
-
-    /**
-     * Returns whether the given realm has the callback URI or not.
-     *
-     * @param string $realm
-     * @return boolean
-     * @deprecated Method deprecated in Release 1.1.0
-     */
-    public function hasCallbackURL($realm)
-    {
-        return $this->hasCallbackURI($realm);
     }
 
     // }}}

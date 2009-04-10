@@ -134,35 +134,6 @@ class Piece_Unity_Service_Authentication
     }
 
     // }}}
-    // {{{ redirectToCallbackURL()
-
-    /**
-     * Redirects to the callback URI for the given realm.
-     *
-     * @param string $realm
-     * @deprecated Method deprecated in Release 1.1.0
-     */
-    public function redirectToCallbackURL($realm = null)
-    {
-        $this->redirectToCallbackURI($realm);
-    }
-
-    // }}}
-    // {{{ hasCallbackURL()
-
-    /**
-     * Returns whether the given realm has the callback URI or not.
-     *
-     * @param string $realm
-     * @return boolean
-     * @deprecated Method deprecated in Release 1.1.0
-     */
-    public function hasCallbackURL($realm = null)
-    {
-        return $this->hasCallbackURI($realm);
-    }
-
-    // }}}
     // {{{ redirectToCallbackURI()
 
     /**
