@@ -94,7 +94,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['REQUEST_URI'] = '/admin/foo.php';
         $configurations = array('realm' => 'Foo',
                                 'uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
@@ -116,7 +116,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['REQUEST_URI'] = '/admin/foo.php';
         $configurations = array('realm' => 'Foo',
                                 'uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
@@ -138,7 +138,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['REQUEST_URI'] = '/admin/foo.php';
         $configurations = array('realm' => 'Foo',
                                 'uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
@@ -162,7 +162,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/foo.php';
+        $_SERVER['REQUEST_URI'] = '/foo.php';
         $configurations = array('realm' => 'Foo',
                                 'uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
@@ -184,7 +184,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/foo.php';
+        $_SERVER['REQUEST_URI'] = '/foo.php';
         $configurations = array('realm' => 'Foo',
                                 'uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
@@ -206,7 +206,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/foo.php';
+        $_SERVER['REQUEST_URI'] = '/foo.php';
         $configurations = array('realm' => 'Foo',
                                 'uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
@@ -226,7 +226,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['REQUEST_URI'] = '/admin/foo.php';
         $configurations = array('uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
                                 );
@@ -247,7 +247,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['REQUEST_URI'] = '/admin/foo.php';
         $configurations = array('uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
                                 );
@@ -270,7 +270,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['REQUEST_URI'] = '/admin/foo.php';
         $configurations = array('uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
                                 );
@@ -296,7 +296,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['REQUEST_URI'] = '/admin/foo.php';
         $configurations = array('uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
                                 );
@@ -324,7 +324,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '443';
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['REQUEST_URI'] = '/admin/foo.php';
         $_SERVER['HTTPS'] = 'on';
         $configurations = array('uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
@@ -353,7 +353,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '8201';
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['REQUEST_URI'] = '/admin/foo.php';
         $configurations = array('uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
                                 );
@@ -381,7 +381,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '8443';
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['REQUEST_URI'] = '/admin/foo.php';
         $_SERVER['HTTPS'] = 'on';
         $configurations = array('uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
@@ -410,7 +410,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['REQUEST_URI'] = '/admin/foo.php';
         $configurations = array('uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
                                 );
@@ -431,7 +431,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
 
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/authenticate.php';
+        $_SERVER['REQUEST_URI'] = '/authenticate.php';
         $configurations = array('uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
                                 );
@@ -452,7 +452,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
 
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/authenticate.php';
+        $_SERVER['REQUEST_URI'] = '/authenticate.php';
         $configurations = array('uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
                                 );
@@ -475,7 +475,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
 
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/admin/bar.php';
+        $_SERVER['REQUEST_URI'] = '/admin/bar.php';
         $configurations = array('uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
                                 );
@@ -531,7 +531,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['REQUEST_URI'] = '/admin/foo.php';
         $configurations = array('uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
                                 );
@@ -552,7 +552,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
 
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/authenticate.php';
+        $_SERVER['REQUEST_URI'] = '/authenticate.php';
         $configurations = array('uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
                                 );
@@ -570,7 +570,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
 
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/authenticate.php';
+        $_SERVER['REQUEST_URI'] = '/authenticate.php';
         $configurations = array('uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')
                                 );
@@ -595,7 +595,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['REQUEST_URI'] = '/admin/foo.php';
         $configurations = array('realm' => 'Foo',
                                 'uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/.*')
@@ -617,7 +617,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['REQUEST_URI'] = '/admin/foo.php';
         $configurations = array('realm' => 'Foo',
                                 'uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/.*')
@@ -639,7 +639,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/admin/foo.php';
+        $_SERVER['REQUEST_URI'] = '/admin/foo.php';
         $configurations = array('realm' => 'Foo',
                                 'uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/.*'),
@@ -660,7 +660,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/users/authenticate.php';
+        $_SERVER['REQUEST_URI'] = '/users/authenticate.php';
         $configurations = array('realm'     => 'Foo',
                                 'uri'       => 'http://example.org/users/authenticate.php',
                                 'includes' => array('^/.*')
@@ -682,7 +682,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
         $_SERVER['HTTP_X_FORWARDED_SERVER'] = 'example.org';
         $_SERVER['SERVER_NAME'] = 'foo.example.org';
         $_SERVER['SERVER_PORT'] = '8201';
-        $_SERVER['SCRIPT_NAME'] = '/users/authenticate.php';
+        $_SERVER['REQUEST_URI'] = '/users/authenticate.php';
         $configurations = array('realm'     => 'Foo',
                                 'uri'       => 'http://example.org/foo/users/authenticate.php',
                                 'includes' => array('^/.*')
@@ -707,7 +707,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'foo.example.org';
         $_SERVER['SERVER_PORT'] = '8201';
-        $_SERVER['SCRIPT_NAME'] = '/users/authenticate.php';
+        $_SERVER['REQUEST_URI'] = '/users/authenticate.php';
         $configurations = array('realm'     => 'Foo',
                                 'uri'       => 'http://example.org/foo/users/authenticate.php',
                                 'includes' => array('^/.*')
@@ -729,7 +729,7 @@ class Piece_Unity_Plugin_Interceptor_AuthenticationTest extends PHPUnit_Framewor
     {
         $_SERVER['SERVER_NAME'] = 'example.org';
         $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['SCRIPT_NAME'] = '/foo.php';
+        $_SERVER['REQUEST_URI'] = '/foo.php';
         $configurations = array('realm' => 'Foo',
                                 'uri' => 'http://example.org/authenticate.php',
                                 'includes' => array('^/admin/foo\.php$', '^/admin/bar\.php$')

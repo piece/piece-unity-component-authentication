@@ -159,7 +159,7 @@ class Piece_Unity_Plugin_Interceptor_Authentication extends Piece_Unity_Plugin_C
         } else {
             $this->_authenticationState->setCallbackURI(
                 $realm,
-                Stagehand_HTTP_ServerEnv::getRequestURI()
+                Stagehand_HTTP_ServerEnv::getAbsoluteURI()
                                                         );
             $this->context->setView($uri);
 
